@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>	
+	<package name="publiclogin" extends="abstract_struts" namespace="/">		
+		<action name="Logout" class="action.Logout">
+			<result name="logout">/index.jsp</result>
+		</action>		
+	</package>
+	
+	<!-- 操行 -->
+	<package name="Just" extends="abstract_struts" namespace="/">		
+		<action name="JustFilder" class="action.just.JustFilder">
+			<result>/jsp/just/JustFilder.jsp</result>
+		</action>	
+		
+		<action name="JustManager" class="action.just.JustManager">
+			<result>/jsp/just/JustManager.jsp</result>
+			<result name="edit">/jsp/just/JustManager/edit.jsp</result>
+		</action>	
+	</package>
+	
+	<!-- 獎懲 -->
+	<package name="Desd" extends="abstract_struts" namespace="/">		
+		<action name="DesdManager" class="action.desd.DesdManager">
+			<result>/jsp/desd/DesdManager.jsp</result>
+		</action>
+		
+		<action name="Contest" class="action.desd.Contest">
+			<result>/jsp/desd/Contest.jsp</result>
+		</action>	
+	</package>
+	
+	<!-- 點名 -->
+	<package name="RollCall" extends="abstract_struts" namespace="/">		
+		<action name="CallStatusView" class="action.rollCall.CallStatusViewAction">
+			<result>/jsp/CallStatusView.jsp</result>
+		</action>		
+		<action name="TimeOffManager" class="action.rollCall.TimeOffManagerAction">
+			<result>/jsp/TimeOffManager.jsp</result>
+		</action>
+		<action name="TimeOffSearch" class="action.rollCall.TimeOffSearchAction">
+			<result>/jsp/TimeOffSearch.jsp</result>
+		</action>
+		
+		<action name="TimeOffSearch" class="action.rollCall.TimeOffSearchAction">
+			<result>/jsp/TimeOffSearch.jsp</result>
+		</action>
+		
+		<action name="UploadElearningDilg" class="action.rollCall.UploadElearningDilg">
+			<result>/jsp/elearning/UploadElearningDilg.jsp</result>
+		</action>	
+	</package>
+	
+	<!-- 導師 -->
+	<package name="tutor" extends="abstract_struts" namespace="/">
+		<action name="ConductCredits" class="action.tutor.ConductCreditsAction">
+			<result>/jsp/tutor/ConductCredits.jsp</result>
+			<result name="edit">/jsp/tutor/ConductCredit/edit.jsp</result>
+		</action>
+	
+	</package>
+	
+</struts>
