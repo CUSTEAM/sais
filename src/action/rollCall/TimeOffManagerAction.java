@@ -156,9 +156,11 @@ public class TimeOffManagerAction extends BaseAction{
 		
 		List <Map>dClass;
 		boolean checkEmpty=false;
+		int week=b.get(Calendar.DAY_OF_WEEK)-1;
+		if(week==0) week=7; //星期日
 		for(int i=0; i<=days; i++){
 			dClass=df.sqlGet("SELECT dc.* FROM Dtime d,Seld s,Dtime_class dc WHERE d.Sterm='"+getContext().getAttribute("school_term")+"'AND " +
-			"d.Oid=s.Dtime_oid AND d.Oid=dc.Dtime_oid AND dc.week='"+(b.get(Calendar.DAY_OF_WEEK)-1)+"'AND((dc.begin>="+begin+" AND dc.begin<="+end+")OR " +
+			"d.Oid=s.Dtime_oid AND d.Oid=dc.Dtime_oid AND dc.week='"+week+"'AND((dc.begin>="+begin+" AND dc.begin<="+end+")OR " +
 			"(dc.end>="+begin+" AND dc.end<="+end+")) AND s.student_no='"+student_no+"'");			
 			
 			if(dClass.size()>0){
