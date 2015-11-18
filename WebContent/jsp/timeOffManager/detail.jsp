@@ -101,7 +101,7 @@
 				<tr>
 					<td nowrap>${d.comment}</td>
 					<td nowrap>${d.cname}</td>
-					<td nowrap>${fn:substring(d.exdate, 5, 16)}</td>
+					<td nowrap>${fn:substring(d.exdate,5,16)}</td>
 				</tr>
 				</c:forEach>
 			</table>

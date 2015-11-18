@@ -115,7 +115,7 @@ public class CallStatusViewAction extends BaseAction{
 			return SUCCESS;
 		}	
 		
-		session.put("result", df.sqlGet("SELECT cl.ClassName, c.chi_name, d.Oid, e.cname, (SELECT COUNT(*)FROM Dilg WHERE Dtime_oid=d.Oid) as dilgCnt, " +
+		session.put("result", df.sqlGet("SELECT cl.ClassName, c.chi_name, d.Oid, e.cname, (SELECT COUNT(*)FROM Dilg WHERE Dtime_oid=d.Oid AND date>='"+begin+"' AND date<='"+end+"') as dilgCnt, " +
 		"(SELECT COUNT(*)FROM DilgLog WHERE Dtime_oid=d.Oid)as logCnt FROM Csno c, Class cl, (Dtime d LEFT OUTER JOIN " +
 		"empl e ON d.techid=e.idno)LEFT OUTER JOIN Dilg g ON g.Dtime_oid=d.Oid AND g.date>='"+begin+"' AND g.date<='"+end+"' WHERE " +
 		"cl.ClassNo=d.depart_class AND c.cscode=d.cscode AND d.Sterm='"+getContext().getAttribute("school_term")+"' AND cl.CampusNo='"+
