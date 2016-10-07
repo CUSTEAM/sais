@@ -64,7 +64,7 @@ public class ConductCreditsAction extends BaseAction{
 		
 		//全部學生
 		List <Map>stds=df.sqlGet("SELECT s.student_no, com_code1, com_code2, com_code3, " +
-		"s.student_name, j.teacher_score, j.deptheader_score, j.military_score, j.meeting_score, com_code1, com_code2, com_code3 FROM stmd s LEFT OUTER JOIN Just j ON j.student_no=s.student_no WHERE s.depart_class='"+ClassNo+"'");		
+		"s.student_name, j.teacher_score, j.deptheader_score, j.military_score, j.meeting_score, com_code1, com_code2, com_code3 FROM stmd s LEFT OUTER JOIN Just j ON j.student_no=s.student_no WHERE s.depart_class='"+ClassNo+"' ORDER BY s.student_no");		
 				
 		if(stds.get(0).get("total_score")==null){
 			List <Map>dilgRule=df.sqlGet("SELECT id, score FROM Dilg_rules WHERE score>0");//扣分標準
