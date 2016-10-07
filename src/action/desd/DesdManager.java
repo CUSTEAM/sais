@@ -16,7 +16,7 @@ public class DesdManager extends BaseAction{
 	public String dno;
 	public String gno;
 	public String zno;
-	public String tno;
+	
 	
 	public String cause;
 	
@@ -63,8 +63,7 @@ public class DesdManager extends BaseAction{
 		return search();
 	}
 	
-	private void saveDesd(String stdNo){
-		
+	private void saveDesd(String stdNo){		
 		int s1, s2;
 		try{
 			s1=df.sqlGetInt("SELECT deduct FROM CODE_DESD WHERE id='"+kind1+"'")*Integer.parseInt(cnt1);
@@ -98,19 +97,14 @@ public class DesdManager extends BaseAction{
 			msg.setError("請檢查日期、文號、原因");
 			savMessage(msg);
 			return SUCCESS;
-		}
-		if(df.sqlGetInt("SELECT COUNT(*)FROM Class c WHERE c.CampusNo='"+cno+"' AND c.SchoolNo='"+sno+"' AND " +
-		"c.DeptNo='"+dno+"' AND c.Grade='"+gno+"' AND c.seqNo='"+zno+"'")!=1){
-			msg.setError("請指定1個班級");
-			this.savMessage(msg);
-			return SUCCESS;
-			
-		}
+		}		
+		StringBuilder sql=new StringBuilder("SELECT s.student_no FROM Class c, stmd s WHERE s.depart_class=c.ClassNo AND c.CampusNo='"+cno+"'");
+		if(!sno.equals(""))sql.append("AND SchoolNo='"+sno+"'");
+		if(!dno.equals(""))sql.append("AND DeptNo='"+dno+"'");
+		if(!gno.equals(""))sql.append("AND Grade='"+gno+"'");
+		if(!zno.equals(""))sql.append("AND SeqNo='"+zno+"'");		
 		
-		List<Map>stds=df.sqlGet("SELECT s.student_no FROM stmd s, Class c WHERE " +
-		"s.depart_class=c.ClassNo AND c.CampusNo='"+cno+"' AND c.SchoolNo='"+sno+"' AND " +
-		"c.DeptNo='"+dno+"' AND c.Grade='"+gno+"' AND c.seqNo='"+zno+"'");
-		
+		List<Map>stds=df.sqlGet(sql.toString());		
 		
 		for(int i=0; i<stds.size(); i++){
 			try{
@@ -176,7 +170,7 @@ public class DesdManager extends BaseAction{
 		"SUM(IF(d.kind1='6', d.cnt1, 0))as kind16,SUM(IF(d.kind2='1', d.cnt2, 0))as kind21,SUM(IF(d.kind2='2', d.cnt2, 0))as kind22," +
 		"SUM(IF(d.kind2='3', d.cnt2, 0))as kind23,SUM(IF(d.kind2='4', d.cnt2, 0))as kind24,SUM(IF(d.kind2='5', d.cnt2, 0))as kind25," +
 		"SUM(IF(d.kind2='6', d.cnt2, 0))as kind26 FROM desd d, stmd s, Class c WHERE d.student_no=s.student_no AND s.depart_class=c.ClassNo " +
-		"AND c.CampusNo='"+cno+"' AND c.SchoolType LIKE '"+tno+"%' AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
+		"AND c.CampusNo='"+cno+"'AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
 		"AND c.Grade LIKE'"+gno+"%' AND c.SeqNo LIKE'"+zno+"%' GROUP BY c.ClassNo ORDER BY c.ClassNo");
 		
 		List<Map>desd2=df.sqlGet("SELECT c.ClassNo, c.ClassName," +
@@ -187,7 +181,7 @@ public class DesdManager extends BaseAction{
 		"SUM(IF(d.kind1='6', d.cnt1, 0))as kind16,SUM(IF(d.kind2='1', d.cnt2, 0))as kind21,SUM(IF(d.kind2='2', d.cnt2, 0))as kind22," +
 		"SUM(IF(d.kind2='3', d.cnt2, 0))as kind23,SUM(IF(d.kind2='4', d.cnt2, 0))as kind24,SUM(IF(d.kind2='5', d.cnt2, 0))as kind25," +
 		"SUM(IF(d.kind2='6', d.cnt2, 0))as kind26 FROM desd d, stmd s, Class c WHERE d.student_no=s.student_no AND s.depart_class=c.ClassNo AND s.sex='1'" +
-		"AND c.CampusNo='"+cno+"' AND c.SchoolType LIKE '"+tno+"%' AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
+		"AND c.CampusNo='"+cno+"'AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
 		"AND c.Grade LIKE'"+gno+"%' AND c.SeqNo LIKE'"+zno+"%' GROUP BY c.ClassNo ORDER BY c.ClassNo");
 		
 		List<Map>desd3=df.sqlGet("SELECT c.ClassNo, c.ClassName," +
@@ -198,14 +192,14 @@ public class DesdManager extends BaseAction{
 		"SUM(IF(d.kind1='6', d.cnt1, 0))as kind16,SUM(IF(d.kind2='1', d.cnt2, 0))as kind21,SUM(IF(d.kind2='2', d.cnt2, 0))as kind22," +
 		"SUM(IF(d.kind2='3', d.cnt2, 0))as kind23,SUM(IF(d.kind2='4', d.cnt2, 0))as kind24,SUM(IF(d.kind2='5', d.cnt2, 0))as kind25," +
 		"SUM(IF(d.kind2='6', d.cnt2, 0))as kind26 FROM desd d, stmd s, Class c WHERE d.student_no=s.student_no AND s.depart_class=c.ClassNo AND s.sex='2' " +
-		"AND c.CampusNo='"+cno+"' AND c.SchoolType LIKE '"+tno+"%' AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
+		"AND c.CampusNo='"+cno+"'AND c.SchoolNo LIKE '"+sno+"%' AND c.DeptNo LIKE'"+dno+"%' " +
 		"AND c.Grade LIKE'"+gno+"%' AND c.SeqNo LIKE'"+zno+"%' GROUP BY c.ClassNo ORDER BY c.ClassNo");
 		
 		DesdPrint p=new DesdPrint();
 		p.print(response, df.sqlGet("SELECT st.sex, (SELECT name FROM CODE_DESD WHERE id=d.kind1)as k1name,(SELECT name FROM " +
 		"CODE_DESD WHERE id=d.kind2)as k2name, cdc.name, st.student_name,c.ClassName, d.* FROM desd d LEFT OUTER JOIN CODE_DESD_CAUSE cdc ON " +
 		"d.reason=cdc.id, stmd st, Class c WHERE st.student_no=d.student_no AND c.ClassNo=st.depart_class AND  c.CampusNo='"+cno+"' AND " +
-		"c.SchoolNo LIKE'"+sno+"%' AND c.SchoolType LIKE'"+tno+"%' AND c.DeptNo LIKE'"+dno+"%' AND c.Grade LIKE'"+gno+"%' AND c.seqNo LIKE'"+zno+"%' ORDER BY c.ClassNo, " +
+		"c.SchoolNo LIKE'"+sno+"%'AND c.DeptNo LIKE'"+dno+"%' AND c.Grade LIKE'"+gno+"%' AND c.seqNo LIKE'"+zno+"%' ORDER BY c.ClassNo, " +
 		"d.student_no, d.ddate"),desd, desd2, desd3, info);
 		p=null;
 		return null;

@@ -45,7 +45,11 @@ public class TimeOffManagerAction extends BaseAction{
 		request.setAttribute("dilgs", list);		
 		request.setAttribute("info", sam.StudentDilg(student_no));
 		request.setAttribute("cs", sam.getDilgDetail(student_no, getContext().getAttribute("school_term").toString()));
-		request.setAttribute("just", df.sqlGetStr("SELECT total_score FROM Just WHERE student_no='"+student_no+"'"));//判斷該生是否已結算
+		try{
+			request.setAttribute("just", df.sqlGetStr("SELECT total_score FROM Just WHERE student_no='"+student_no+"'"));//判斷該生是否已結算
+		}catch(Exception e){//離校或其他異常
+			request.setAttribute("just", null);
+		}
 		request.setAttribute("dilgHist", sam.getDilgRecord(student_no));
 		request.setAttribute("failSeld", sam.getFailStd(student_no));//已標記扣考
 		request.setAttribute("endStart", sam.getEndAtStart(student_no));		
@@ -156,13 +160,13 @@ public class TimeOffManagerAction extends BaseAction{
 		
 		List <Map>dClass;
 		boolean checkEmpty=false;
-		int week=b.get(Calendar.DAY_OF_WEEK)-1;
-		if(week==0) week=7; //星期日
-		for(int i=0; i<=days; i++){
+		//TODO 非常奇怪，有被誰改動過？這麼久沒人發現？
+		for(int i=0; i<=days; i++){	
+			int week=b.get(Calendar.DAY_OF_WEEK)-1;
+			if(week==0) week=7; //星期日
 			dClass=df.sqlGet("SELECT dc.* FROM Dtime d,Seld s,Dtime_class dc WHERE d.Sterm='"+getContext().getAttribute("school_term")+"'AND " +
 			"d.Oid=s.Dtime_oid AND d.Oid=dc.Dtime_oid AND dc.week='"+week+"'AND((dc.begin>="+begin+" AND dc.begin<="+end+")OR " +
-			"(dc.end>="+begin+" AND dc.end<="+end+")) AND s.student_no='"+student_no+"'");			
-			
+			"(dc.end>="+begin+" AND dc.end<="+end+")) AND s.student_no='"+student_no+"'");	
 			if(dClass.size()>0){
 				checkEmpty=true;
 			}

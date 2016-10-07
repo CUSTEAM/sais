@@ -466,7 +466,7 @@ public class ListMail {
 				out.println ("                      <w:rPr>");
 				out.println ("                        <wx:font wx:val='新細明體'/>");
 				out.println ("                      </w:rPr>");
-				out.println ("                      <w:t>於"+beginDate+"至"+endDate+"累計曠課"+list.get(i).get("cnt")+"節，請督促其勿再曠課，以免影響操行成績。</w:t>");
+				out.println ("                      <w:t>截至"+endDate+"累計曠課"+list.get(i).get("endCnt")+"節，請督促其勿再曠課，以免影響操行成績。</w:t>");
 				out.println ("                    </w:r>");
 				out.println ("                  </w:p>");
 				out.println ("                  <w:p wsp:rsidR='00C854CA' wsp:rsidRPr='000B302C' wsp:rsidRDefault='00C854CA' wsp:rsidP='00C854CA'>");
@@ -502,7 +502,7 @@ public class ListMail {
 					sb=new StringBuilder();
 					for(int k=0; k<6; k++){
 						if(cnt<tmp.size()){
-							sb.append(    ((Map)tmp.get(cnt)).get("date")+"第"+((Map)tmp.get(cnt)).get("cls")+"節| "            );
+							sb.append(    ((Map)tmp.get(cnt)).get("date")+"第"+((Map)tmp.get(cnt)).get("cls")+"節, "            );
 							cnt++;
 						}else{
 							sb.append("");

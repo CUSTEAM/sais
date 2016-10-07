@@ -34,10 +34,12 @@
 	<package name="RollCall" extends="abstract_struts" namespace="/">		
 		<action name="CallStatusView" class="action.rollCall.CallStatusViewAction">
 			<result>/jsp/CallStatusView.jsp</result>
-		</action>		
+		</action>
+				
 		<action name="TimeOffManager" class="action.rollCall.TimeOffManagerAction">
 			<result>/jsp/TimeOffManager.jsp</result>
 		</action>
+		
 		<action name="TimeOffSearch" class="action.rollCall.TimeOffSearchAction">
 			<result>/jsp/TimeOffSearch.jsp</result>
 		</action>
@@ -49,6 +51,7 @@
 		<action name="UploadElearningDilg" class="action.rollCall.UploadElearningDilg">
 			<result>/jsp/elearning/UploadElearningDilg.jsp</result>
 		</action>	
+		
 	</package>
 	
 	<!-- 導師 -->

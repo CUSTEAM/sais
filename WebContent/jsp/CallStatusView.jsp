@@ -8,7 +8,7 @@
 <script src="/eis/inc/js/plugin/jquery-ui.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 <link href="/eis/inc/css/jquery-ui.css" rel="stylesheet"/>
-<title>Insert title here</title>
+<title>點名狀況查詢</title>
 <script>  
 $(document).ready(function() {
 	
@@ -24,51 +24,35 @@ $(document).ready(function() {
 </head>
 <body>
 
-<div class="alert">
+<div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <strong>點名狀況查核</strong> 請輸入下列欄位後按下「依範圍查詢」，不想看到過多結果請縮小查詢範圍，增加效率&nbsp;
+    <strong>點名狀況查詢</strong> 請輸入下列欄位後按下「依範圍查詢」，不想看到過多結果請縮小查詢範圍，增加效率&nbsp;
     <div id="funbtn" rel="popover" title="說明" data-content="每個欄位均可排序" data-placement="bottom" class="btn btn-warning">?</div>
 </div>
-<form action="CallStatusView" method="post" class="form-horizontal">
+<form action="CallStatusView" method="post" class="form-inline">
+<div class="panel panel-primary">
+<div class="panel-heading">查詢條件</div>
 <table class="table">
 	<tr>
-		<td class="text-info" nowrap>查詢範圍</td>
-		<td colspan="3" class="control-group info">
 		
-		<select name="cno">
-			<c:forEach items="${allCampus}" var="c">
-			<option <c:if test="${c.idno eq cno}">selected</c:if> value="${c.idno}">${c.name}</option>
-			</c:forEach>
-		</select>
+		<td>
 		
-		<select name="sno">
-			<option value="">選擇學制</option>
-			<c:forEach items="${allSchool}" var="c">
-			<option <c:if test="${c.idno eq sno}">selected</c:if> value="${c.idno}">${c.name}</option>
-			</c:forEach>
-		</select>
-		
-		<select name="dno">
-			<option value="">選擇科系</option>
-			<c:forEach items="${allDept}" var="c">
-			<option <c:if test="${c.idno eq dno}">selected</c:if> value="${c.idno}">${c.name}</option>
-			</c:forEach>
-		</select>		
+		<%@ include file="/inc/jsp-kit/csdSelector.jsp"%>
 		</td>
 	</tr>
 	<tr>
-		<td class="text-info" nowrap>日期範圍</td>
-		<td class="control-group info" width="1">
-			<input type="text" placeholder="點一下輸入日期" name="begin" value="${begin}"/>
-		</td>		
-		<td class="control-group info" width="100%">
-			<input type="text" placeholder="點一下輸入日期" name="end" value="${end}"/>
+		<td>
+			<input class="form-control" type="text" placeholder="點一下輸入日期" name="begin" value="${begin}"/>
+		
+			<input class="form-control" type="text" placeholder="點一下輸入日期" name="end" value="${end}"/>
 			<button class="btn btn-info" name="method:search" type="submit">依範圍查詢</button>
 		</td>
 	</tr>
 </table>
-
+</div>
 <c:if test="${!empty result}">
+<div class="panel panel-primary">
+<div class="panel-heading">查詢結果</div>
 <display:table name="${result}" class="table table-striped table-bordered" sort="list" excludedParams="*" >
   	<display:column title="開課班級" property="ClassName" sortable="true" />
   	<display:column title="課程名稱" property="chi_name" sortable="true"/>  	
@@ -77,6 +61,7 @@ $(document).ready(function() {
   	<display:column title="缺課節數" property="dilgCnt" sortable="true" />
   	<display:column title="每日細節" property="Oid" paramId="Oid" href="CallStatusView" value="查看"/>
 </display:table>
+</div>
 </c:if>
 
 <script>

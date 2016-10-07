@@ -9,6 +9,7 @@ import action.BaseAction;
 import action.rollCall.timeOffSearch.ListCls;
 import action.rollCall.timeOffSearch.ListMail;
 import action.rollCall.timeOffSearch.ListStd;
+import model.Message;
 
 public class TimeOffSearchAction extends BaseAction{
 	
@@ -18,8 +19,9 @@ public class TimeOffSearchAction extends BaseAction{
 	public String gno;
 	public String zno;
 	
+	public String abs;
 	public String less;
-	public int num;
+	public String more;
 	
 	public String beginDate;
 	public String endDate;
@@ -31,13 +33,13 @@ public class TimeOffSearchAction extends BaseAction{
 	
 	
 	/**
-	 * 班級
+	 * 班級統計表
 	 * @return
 	 * @throws IOException
 	 */
 	public String listCls() throws IOException{		
 		
-		/*簡短但效率
+		/*簡短但效率不佳
 		List a=df.sqlGet("SELECT sum(abs='2') abs2, sum(abs='3') abs3, sum(abs='4') abs4, " +
 				"sum(abs='6') abs6,(SELECT COUNT(*)FROM stmd WHERE stmd.student_no NOT IN " +
 				"(SELECT DISTINCT Dilg.student_no FROM Dilg))as noabs FROM " +
@@ -62,6 +64,7 @@ public class TimeOffSearchAction extends BaseAction{
 		if(!dno.equals(""))sb.append("AND DeptNo='"+dno+"'");
 		if(!gno.equals(""))sb.append("AND Grade='"+gno+"'");
 		if(!zno.equals(""))sb.append("AND SeqNo='"+zno+"'");
+		//if(!abs.equals(""))sb.append("AND SeqNo='"+zno+"'");
 		sb.append("ORDER BY ClassNo");
 		List<Map>tmpList=df.sqlGet(sb.toString());			
 		
@@ -80,46 +83,41 @@ public class TimeOffSearchAction extends BaseAction{
 	}
 	
 	/**
-	 * 嚴重
+	 * 個人統計表
 	 * @return
 	 * @throws IOException
 	 */
-	public String listStd() throws IOException{
-		
-		List tmpList=df.sqlGet("SELECT c.ClassName, s.student_no, s.student_name,s.parent_name,s.CellPhone,s.telephone, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='1' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs1, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='2' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs2, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='3' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs3, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='4' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs4, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='5' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs5, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='6' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs6, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='7' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs7, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='8' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs8, " +
-		"(SELECT COUNT(*)FROM Dilg WHERE abs='9' AND Dilg.date>='"+beginDate+"' AND Dilg.date<='"+endDate+"' AND Dilg.student_no=s.student_no)as abs9 " +
-		"FROM Class c,stmd s WHERE c.ClassNo=s.depart_class AND s.depart_class LIKE'"+cno+sno+dno+gno+zno+"%' ORDER BY c.ClassNo, s.student_no");
-		
-		List list=new ArrayList();
-		for(int i=0; i<tmpList.size(); i++){
-			if (less.equals("m")) {
-				if(Integer.parseInt(((Map)tmpList.get(i)).get("abs2").toString())>=num){
-					list.add(tmpList.get(i));
-				}
-			}
-			if (less.equals("l")) {
-				if(Integer.parseInt(((Map)tmpList.get(i)).get("abs1").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs2").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs3").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs4").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs5").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs6").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs7").toString())<=num&&
-				   Integer.parseInt(((Map)tmpList.get(i)).get("abs8").toString())<=num&&
-			       Integer.parseInt(((Map)tmpList.get(i)).get("abs9").toString())<=num){
-					list.add(tmpList.get(i));
-				}
-			}
+	public String listStd() throws IOException{		
+		StringBuilder sql=new StringBuilder("SELECT c.ClassName, s.student_no,"
+		+ "s.student_name,s.parent_name,s.CellPhone,s.telephone,"
+		+ "count(case abs when '1' then 1 else null end)as abs1,"
+		+ "count(case abs when '2' then 1 else null end)as abs2,"
+		+ "count(case abs when '3' then 1 else null end)as abs3,"
+		+ "count(case abs when '4' then 1 else null end)as abs4,"
+		+ "count(case abs when '5' then 1 else null end)as abs5,"
+		+ "count(case abs when '6' then 1 else null end)as abs6,"
+		+ "count(case abs when '7' then 1 else null end)as abs7,"
+		+ "count(case abs when '8' then 1 else null end)as abs8,"
+		+ "count(case abs when '9' then 1 else null end)as abs9,"
+		+ "COUNT(*)as abs FROM Class c, stmd s, Dilg d WHERE "
+		+ "s.depart_class=c.ClassNo AND d.student_no=s.student_no "
+		+ "AND d.date>='"+beginDate+"' AND d.date<='"+endDate+"'AND c.CampusNo='"+cno+"'");		
+		if(!abs.equals(""))sql.append("AND d.abs='"+abs+"'");
+		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
+		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
+		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
+		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");		
+		sql.append("GROUP BY d.student_no ");	
+		if(!less.equals("")||!more.equals(""))sql.append("HAVING ");
+		if(!less.equals(""))sql.append("abs"+abs+"<="+less+" ");			
+		if(!more.equals("")){
+			if(!less.equals("")){sql.append("AND ");
 		}
-		tmpList=null;
+			sql.append("abs"+abs+">"+more+" ");
+		}				
+		sql.append("ORDER BY c.ClassNo, s.student_no");		
+		System.out.println(sql);
+		List<Map>list=df.sqlGet(sql.toString());		
 		ListStd ls=new ListStd();
 		ls.print(response, list, beginDate, endDate, getContext().getAttribute("school_year").toString(), getContext().getAttribute("school_term").toString());
 		ls=null;
@@ -134,32 +132,38 @@ public class TimeOffSearchAction extends BaseAction{
 	 */
 	public String listMail() throws IOException, ParseException{
 		
-		List<Map>tmpList=df.sqlGet("SELECT c.ClassName, s.student_no, s.student_name,s.parent_name,s.curr_addr, s.curr_post,COUNT(*)as cnt " +
-		"FROM Class c,stmd s LEFT OUTER JOIN Just j ON j.student_no=s.student_no ,Dilg d WHERE j.dilg_mail_cnt<"+num+" AND c.ClassNo=s.depart_class AND s.student_no=d.student_no AND d.abs='2' AND " +
-		"s.depart_class LIKE'"+cno+sno+dno+gno+zno+"%' AND d.date<='"+endDate+"' GROUP BY s.student_no ORDER BY c.ClassNo");
-		
-		//缺課內容
-		List <Map>list=new ArrayList();
-		List tmp;
-		for(int i=0; i<tmpList.size(); i++){
-			tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m-%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+tmpList.get(i).get("student_no")+"'");
-			
-			if(Integer.parseInt(tmpList.get(i).get("cnt").toString())<num){				
-				continue;
-			}
-			/*
-			if(df.sqlGetInt("SELECT COUNT(*)as cnt FROM Dilg d WHERE d.abs='2' AND d.student_no='"+
-			tmpList.get(i).get("student_no")+"' AND d.date<='"+beginDate+"'")>num){
-				continue;
-			}	
-			*/		
-			tmpList.get(i).put("dilgs", tmp);
-			list.add(tmpList.get(i));
-			df.exSql("INSERT INTO Just(student_no, dilg_mail_cnt) VALUES ('"+tmpList.get(i).get("student_no")+"', "+num+")ON DUPLICATE KEY UPDATE dilg_mail_cnt="+num);
+		if(less.equals("")||more.equals("")||beginDate.equals("")||endDate.equals("")){
+			Message msg=new Message();
+			msg.setError("條件不完整");
+			this.savMessage(msg);
+			return SUCCESS;
 		}
 		
+		StringBuilder sql=new StringBuilder("SELECT(SELECT COUNT(*)FROM Dilg WHERE "
+		+ "student_no=s.student_no AND date<='"+beginDate+"'AND abs='2')as beginCnt,"
+		+ "(SELECT COUNT(*)FROM Dilg WHERE student_no=s.student_no "
+		+ "AND date<='"+endDate+"' AND abs='2')as endCnt,"
+		+ "c.ClassName,s.student_no, s.student_name,s.parent_name,"
+		+ "s.curr_addr,s.curr_post FROM Class c,stmd s WHERE c.ClassNo=s.depart_class ");
+		
+		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
+		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
+		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
+		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");
+		sql.append("HAVING beginCnt>"+more+" AND endCnt>"+more+" AND "
+		+ "endCnt<"+less+" ORDER BY c.ClassNo");
+		
+		List<Map>stds=df.sqlGet(sql.toString());
+		List <Map>list=new ArrayList();
+		List tmp;
+		for(int i=0; i<stds.size(); i++){
+			tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m/%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+stds.get(i).get("student_no")+"'");
+			stds.get(i).put("dilgs", tmp);
+		}
+		
+		
 		ListMail lm=new ListMail();
-		lm.print(response, list, beginDate, endDate);
+		lm.print(response, stds, beginDate, endDate);
 		lm=null;		
 		return null;
 	}

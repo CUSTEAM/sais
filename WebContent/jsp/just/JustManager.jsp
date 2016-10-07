@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 
-<title>Insert title here</title>
+<title>操行成績結算後重新計算</title>
 <script src="/eis/inc/js/plugin/bootstrap-typeahead.js"></script>
 <script src="/eis/inc/js/plugin/json2.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui.js"></script>
@@ -70,33 +70,39 @@ onkeyup="return ValidateNumber($(this),value)"*/
 
 
 
-<div class="alert alert-danger">
-    <h4>操行成績管理</h4>
+<div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">
+    <h4>操行成績結算後重新計算</h4>
     <p style="margin-top:5px;">輸入班級或學號找尋學生開始編輯，請在成績結算後進行</p>
     <p>修改⅓缺課名單請先查詢學生，點選學號或姓名修正該科目缺課記錄</p>
 </div>
 
-<form action="JustManager" method="post">
+<form action="JustManager" method="post" class="form-inline">
 <div class="wizard-steps">
   	<div><a href="#"><span>1</span> 操行成績結算</a></div>
   	<div class="completed-step"><a href="#"><span>2</span> 修改學生缺曠扣考及總分</a></div>
 </div>
+<br><br>
+<div class="panel panel-primary">
+<div class="panel-heading">結算範圍</div>
+<ul class="list-group">
+<li class="list-group-item"><span class="label label-as-badge label-warning">1</span> 試算動作時即產生1/3缺課暫時名單, 重新試算會依據目前的缺課記錄更新暫存名單</li>
+<li class="list-group-item"><span class="label label-as-badge label-warning">2</span> 結算動作完成後會凍結所有影響操行成績的相關操作</li>
+<li class="list-group-item"><span class="label label-as-badge label-danger">3</span> 結算後必須以公假或銷假方式更新缺曠記錄，再執行 <a href="JustManager"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>結算後修正管理</a></li>
+</ul>
 <table class="table">
 	<tr>
-		<td class="text-info" nowrap>班級</td>
-		<td width="100%" class="control-group info" colspan="2">
+		<td width="100%">
 		<%@ include file="/inc/jsp-kit/classSelector.jsp"%>
 		</td>
 	</tr>
 	<tr>
-		<td class="text-info" nowrap>學號姓名</td>
-		<td width="100%" colspan="2">
-		<div class="input-append control-group info">
-			<input class="span4" onClick="$('#idiot').val(''), $('#stdNo').val('');" autocomplete="off" type="text" id="idiot" value="${nameno}" name="nameno"
+		<td>
+		
+			<input class="form-control" onClick="$('#idiot').val(''), $('#stdNo').val('');" autocomplete="off" type="text" id="idiot" value="${nameno}" name="nameno"
 			 data-provide="typeahead" placeholder="學號或姓名" />
 			<input type="hidden" id="stdNo" value="${stdNo}" name="stdNo"/>
 		    <button class="btn btn-info" name="method:search" type="submit">尋找學生</button>
-		</div>	
+		
 		</td>
 	</tr>
 </table>
