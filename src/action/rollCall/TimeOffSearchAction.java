@@ -144,21 +144,36 @@ public class TimeOffSearchAction extends BaseAction{
 		+ "(SELECT COUNT(*)FROM Dilg WHERE student_no=s.student_no "
 		+ "AND date<='"+endDate+"' AND abs='2')as endCnt,"
 		+ "c.ClassName,s.student_no, s.student_name,s.parent_name,"
-		+ "s.curr_addr,s.curr_post FROM Class c,stmd s WHERE c.ClassNo=s.depart_class ");
+		+ "s.curr_addr,s.curr_post FROM Class c,stmd s WHERE c.CampusNo='"+cno+"' AND c.ClassNo=s.depart_class ");
 		
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
 		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
 		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
 		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");
-		sql.append("HAVING beginCnt>"+more+" AND endCnt>"+more+" AND "
+		//sql.append("HAVING beginCnt>"+more+" AND endCnt>"+more+" AND "
+		//+ "endCnt<"+less+" ORDER BY c.ClassNo");
+		sql.append("HAVING endCnt>"+more+" AND "
 		+ "endCnt<"+less+" ORDER BY c.ClassNo");
+		
+		
 		
 		List<Map>stds=df.sqlGet(sql.toString());
 		List <Map>list=new ArrayList();
 		List tmp;
+		int beginCnt, more=Integer.parseInt(this.more);
 		for(int i=0; i<stds.size(); i++){
+			beginCnt=Integer.parseInt(stds.get(i).get("beginCnt").toString());
+			System.out.println(beginCnt);
 			tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m/%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+stds.get(i).get("student_no")+"'");
 			stds.get(i).put("dilgs", tmp);
+			
+			if(beginCnt==0){
+				list.add(stds.get(i));
+			}else{
+				if(beginCnt>more)list.add(stds.get(i));
+			}
+			
+			
 		}
 		
 		

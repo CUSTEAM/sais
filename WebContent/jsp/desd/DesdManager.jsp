@@ -77,7 +77,7 @@ $(document).ready(function() {
 <body>
     
 <div id="dialog"></div>
-<div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">
+<div class="bs-callout bs-callout-info">
 <button type="button" class="close" data-dismiss="alert">&times;</button>
 <strong>獎懲資料管理</strong></div>
     
