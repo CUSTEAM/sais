@@ -5,36 +5,59 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-<script src="/eis/inc/js/jquery-ui.js"></script>
+<title>操行成績及評語管理</title>
+
 <script src="/eis/inc/js/plugin/bootstrap-typeahead.js"></script>
+
+
+
+<script src="/eis/inc/js/develop/stdinfo.js"></script>
+<script src="/eis/inc/js/develop/timeInfo.js"></script>
+<script src="/eis/inc/js/plugin/jquery.tinyMap.min.js"></script>
+
+
+
 <link href="/eis/inc/css/jquery-ui.css" rel="stylesheet"/>
 <script>
-$(document).ready(function() {
-	$('#funbtn').popover("show");
-	setTimeout(function() {
-		$('#funbtn').popover("hide");
-	}, 8000);
-	
-	$("input[id='nameno']").typeahead({
-		
-		remote:"#"+this.name,
+$(document).ready(function() {	
+	$(".nameno").typeahead({		
+		remote:"#"+this.id,
 		source : [],
-		items : 20,
-		
+		items : 10,		
 		updateSource:function(inputVal, callback){			
 			$.ajax({
 				type:"POST",
 				url:"/eis/autoCompleteCode1",
 				dataType:"json",
-				data:{length:20, nameno:inputVal, name:(this).name},
+				//data:{length:10, nameno:inputVal, name:(this).name},
+				data:{nameno:inputVal},
 				success:function(d){
 					callback(d.list);
 				}
 			});
-		}
-	
+		}	
 	});
+	
+	
+	
+	/*$(".nameno").typeahead({
+		remote:"#stdNo",
+		source : [],
+		items : 10,
+		updateSource:function(inputVal, callback){			
+			$.ajax({
+				type:"POST",
+				url:"/eis/autoCompleteStmd",
+				dataType:"json",
+				data:{length:10, nameno:inputVal},
+				success:function(d){
+					callback(d.list);
+				}
+			});
+		}		
+	});*/
+	
+	
 	
 });
 
@@ -81,35 +104,46 @@ function getStdScoreInfo(no, name){
 </head>
 <body>
 
-<!-- Modal -->
-<div id="codeInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3>操行評語代碼表</h3>
-</div>
-<div class="modal-body">
-<c:forEach items="${codeInfo}" var="c">
-${c.no} ${c.name}<br>
-</c:forEach>
-</div>
-<div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">關閉</button>
 
+
+<!-- Modal -->
+<div class="modal fade" id="codeInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel1">評語參考</h4>
+      </div>
+      <div class="modal-body">
+        <c:forEach items="${codeInfo}" var="c">
+		${c.no} ${c.name}<br>
+		</c:forEach>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
 </div>
-</div>
+
+
+
 <form action="ConductCredits" method="post">
 				
-<div class="alert">
+<div class="bs-callout bs-callout-info">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	<h4>操行成績加權</h4> 請依照您的權限給予加減分<br><strong>完成後請點選最下方</strong> <button class="btn btn btn-success btn-small" name="method:save" type="submit">儲存</button>
-	儲存完成不再編輯請按 <a href="ConductCredits" class="btn">返回</a> <div id="funbtn" rel="popover" title="說明" data-content="操評會、獎懲、缺曠，以及總成績，學期中均為估計值，學期末由學務單位定期結算" data-placement="right" class="btn btn-warning">?</div>
+	<h4>操行成績加權</h4> 操評會、獎懲、缺曠，以及總成績，學期中均為估計值, 學期末由學務單位定期結算<br>
+	<strong>完成後請點選最下方</strong> <button class="btn btn btn-danger btn-xs" name="method:save" type="submit">儲存</button>
+	儲存完成不再編輯請按 <a href="ConductCredits" class="btn btn-xs btn-default">返回</a> 
 </div>	
 
-<div class="alert alert-error">
+<div class="bs-callout bs-callout-warning">
 	<h4>評語自動完成</h4>輸入代碼或任意文字均可接受，中文字詞提供評語參考，不限制文字內容。<br>若輸入代碼則必須與代碼表一致，點選儲存後轉換為文字。
 </div>	
-
-<table class="table control-group info text-info form-horizontal">
+<div class="panel panel-primary">
+<div class="panel-heading">學生列表</div>
+<table class="table">
 	<tr>
 		<td nowrap>學號</td>
 		<td nowrap>姓名</td>
@@ -124,30 +158,29 @@ ${c.no} ${c.name}<br>
 		<td nowrap>評語一</td>
 		<td nowrap>評語二</td>
 		<td nowrap>評語三</td>
-		<td width="100%"><input type="hidden" name="rule" value="${rule}" /></td>
+		<td><input type="hidden" name="rule" value="${rule}" /></td>
 	</tr>
 	<c:forEach items="${stds}" var="s">
 		<tr>
 			<td nowrap>
 			<input type="hidden" name="student_no" value="${s.student_no}" />${s.student_no}</td>
-			<td nowrap>${s.student_name}
-			
-			
-			</td>
+			<td nowrap>${s.student_name}</td>
 			<td>
-			<div class="btn-group">
-    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-list" style="margin-top:1px;"></i></a>
-    <ul class="dropdown-menu">
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">程缺課記錄</a></li>
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
-    	<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
-    	<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>
-    </ul>
-    </div>
+			<div class="btn-group btn-default">
+					<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i class="glyphicon glyphicon-align-justify" style="margin-top: 1px;"></i></button>
+					<ul class="dropdown-menu">
+						<li><a href="#stdInfo" data-toggle="modal" onClick="getStudentTime('${s.student_no}', '${s.student_name}')">本學期課表</a></li>
+						<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '${Oid}')">本課程缺課記錄</a></li>
+						<li><a href="#stdInfo" data-toggle="modal" onClick="getDilgInfo('${s.student_no}', '${s.student_name}', '')">所有課程缺課記錄</a></li>
+						<li><a href="#stdInfo" data-toggle="modal" onClick="getStdContectInfo('${s.student_no}', '${s.student_name}')">連絡資訊</a></li>
+						<li><a href="#stdInfo" data-toggle="modal" onClick="getStdScoreInfo('${s.student_no}', '${s.student_name}')">歷年成績</a></li>
+						<li><a href="/CIS/Portfolio/ListMyStudents.do" target="_blank">學習歷程檔案</a></li>									
+					</ul>
+				</div>
 			</td>
 			<td nowrap onClick="cnt('${s.student_no}')">								
-				<c:if test="${rule eq 'T'}">				
-				<select id="teacher_score${s.student_no}" name="teacher_score">
+				<c:if test="${rule eq 'T'}">		
+				<select class="selectpicker" data-width="auto" id="teacher_score${s.student_no}" name="teacher_score">		
 					<option <c:if test="${s.teacher_score eq'4'}">selected</c:if> value="4">＋4</option>
 					<option <c:if test="${s.teacher_score eq'3'}">selected</c:if> value="3">＋3</option>
 					<option <c:if test="${s.teacher_score eq'2'}">selected</c:if> value="2">＋2</option>
@@ -164,7 +197,7 @@ ${c.no} ${c.name}<br>
 											
 			<td nowrap onClick="cnt('${s.student_no}')">								
 				<c:if test="${rule eq 'D'}">				
-				<select id="deptheader_score${s.student_no}" name="deptheader_score">
+				<select class="selectpicker" data-width="auto" id="deptheader_score${s.student_no}" name="deptheader_score">
 					<option <c:if test="${s.deptheader_score eq'2'}">selected</c:if> value="2">＋2</option>
 					<option <c:if test="${s.deptheader_score eq'1'}">selected</c:if> value="1">＋1</option>
 					<option <c:if test="${s.deptheader_score eq'0'}">selected</c:if> value="0">± 0</option>
@@ -177,7 +210,7 @@ ${c.no} ${c.name}<br>
 			
 			<td nowrap onClick="cnt('${s.student_no}')">
 				<c:if test="${rule eq 'M'}">
-				<select id="military_score${s.student_no}" name="military_score">
+				<select class="selectpicker" data-width="auto" id="military_score${s.student_no}" name="military_score">
 					<option <c:if test="${s.military_score eq'4'}">selected</c:if> value="4">＋4</option>
 					<option <c:if test="${s.military_score eq'3'}">selected</c:if> value="3">＋3</option>
 					<option <c:if test="${s.military_score eq'2'}">selected</c:if> value="2">＋2</option>
@@ -203,42 +236,66 @@ ${c.no} ${c.name}<br>
 			<c:if test="${total<=95}">${total}</c:if>
 			</td>
 			<td nowrap>
-			<input name="com_code1" type="text" class="span2" onClick="$(this).val(''), $('#com_code1${s.student_no}').val('')" autocomplete="off" onpaste="return false;"
-			value="<c:if test="${!empty s.com_code1}">${s.com_code1}</c:if>" id="nameno" data-provide="typeahead" onClick="addStd()" placeholder="評語" />
-			<button href="#codeInfo" role="button" data-toggle="modal" class="btn btn-warning btn-mini">?</button>				
+			<div class="input-group">
+			<input name="com_code1" id="c1${s.student_no}" type="text" class="form-control nameno" onClick="$(this).val(''), $('#com_code1${s.student_no}').val('')" autocomplete="off" onpaste="return true"
+			value="<c:if test="${!empty s.com_code1}">${s.com_code1}</c:if>" data-provide="typeahead" placeholder="評語1" />
+			<span class="input-group-btn">
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#codeInfo">?</button>
+			</span>
+			</div>
 			</td>
 			<td nowrap>
-			<input name="com_code2" type="text" class="span2" onClick="$(this).val(''), $('#com_code2${s.student_no}').val('');" autocomplete="off" onpaste="return false;"
-			value="<c:if test="${!empty s.com_code2}">${s.com_code2}</c:if>" id="nameno" data-provide="typeahead" onClick="addStd()" placeholder="評語" />
-			<button href="#codeInfo" role="button" data-toggle="modal" class="btn btn-warning btn-mini">?</button>
+			<div class="input-group">
+			<input name="com_code2" id="c2${s.student_no}" type="text" class="form-control nameno" onClick="$(this).val(''), $('#com_code2${s.student_no}').val('');" autocomplete="off" onpaste="return true"
+			value="<c:if test="${!empty s.com_code2}">${s.com_code2}</c:if>" data-provide="typeahead" placeholder="評語2" />
+			<span class="input-group-btn">
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#codeInfo">?</button>
+			</span>
+			</div>
 			</td>
+			
+			
 			<td nowrap>
-			<input name="com_code3" type="text" class="span2" onClick="$(this).val(''), $('#com_code3${s.student_no}').val('');" autocomplete="off" onpaste="return false;"
-			value="<c:if test="${!empty s.com_code3}">${s.com_code3}</c:if>" id="nameno" data-provide="typeahead" onClick="addStd()" placeholder="評語" />
-			<button href="#codeInfo" role="button" data-toggle="modal" class="btn btn-warning btn-mini">?</button>
+			<div class="input-group">
+			<input name="com_code3" id="c3${s.student_no}" type="text" class="form-control nameno" onClick="$(this).val(''), $('#com_code3${s.student_no}').val('');" autocomplete="off" onpaste="return true"
+			value="<c:if test="${!empty s.com_code3}">${s.com_code3}</c:if>" data-provide="typeahead" placeholder="評語3" />
+			<span class="input-group-btn">
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#codeInfo">?</button>
+			</span>
+			</div>
 			</td>
-			<td width="100%"></td>
+			<td></td>
 		</tr>
 	</c:forEach>
 </table>
-	<c:if test="${empty view}"><button class="btn btn btn-success btn-small" name="method:save" type="submit">儲存</button></c:if>
+<div class="panel-body">
+    <c:if test="${empty view}"><button class="btn btn btn-danger" name="method:save" type="submit">儲存</button></c:if>
 	
-	<a href="ConductCredits" class="btn">返回</a>
+	<a href="ConductCredits" class="btn btn-default">返回</a>
+  </div>
+</div>
+	
 </form>
 	
 		
 
 <!-- Modal -->
-<div id="stdInfo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="stdNameNo"></h3>
+<div class="modal fade" id="stdInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">×</button>
+		<h3 id="stdNameNo"></h3>
+      </div>
+      <div class="modal-body" id="info"></div>
+      <center><div class="modal-body" style="width:80%; height:400px;" id="stdMap"></div></center>
+	<div class="modal-footer">
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">關閉</button>
+	</div>
+    </div>
+  </div>
 </div>
-<div class="modal-body" id="info">
-</div>
-<div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">關閉</button>
-</div>
-</div>
+
 </body>
 </html>
