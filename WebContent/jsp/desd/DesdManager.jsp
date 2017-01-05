@@ -153,7 +153,7 @@ $(document).ready(function() {
 	<tr>
 		<td>	
 		<button class="btn btn-default" name="method:print" type="submit">列印報表</button>
-		<button class="btn btn-danger" name="method:addAll" type="submit">批次建立</button>
+		<button class="btn btn-danger" onclick="return confirm('請問是否建立？');" name="method:addAll" type="submit">批次建立</button>
 		
 		<div id="info2" rel="popover" title="說明" data-content="整班建立或列表" data-placement="right" class="btn btn-warning">?</div>
 		</td>
