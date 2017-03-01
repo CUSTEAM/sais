@@ -53,13 +53,21 @@ $(document).ready(function() {
 <c:if test="${!empty result}">
 <div class="panel panel-primary">
 <div class="panel-heading">查詢結果</div>
-<display:table name="${result}" class="table table-striped table-bordered" sort="list" excludedParams="*" >
-  	<display:column title="開課班級" property="ClassName" sortable="true" />
+<display:table name="${result}" id="row" class="table table-striped table-bordered" sort="list" requestURI="CallStatusView?method=search">
+	<display:column style="white-space:nowrap;" title="星期節次" sortable="true">
+  	<c:forEach items="${row.stamp}" var="c">
+  	周${c.week}第${c.begin}~${c.end}節<br> 
+  	</c:forEach>
+  	</display:column>
+	<display:column title="開課班級" property="ClassName" sortable="true" />
   	<display:column title="課程名稱" property="chi_name" sortable="true"/>  	
   	<display:column title="授課教師" property="cname" sortable="true" />
   	<display:column title="點名次數" property="logCnt" sortable="true" />
   	<display:column title="缺課節數" property="dilgCnt" sortable="true" />
-  	<display:column title="每日細節" property="Oid" paramId="Oid" href="CallStatusView" value="查看"/>
+  	
+  	<display:column title="每日細節">
+  	<a href="CallStatusView?Oid=${row.Oid}" class="btn btn-default btn-sm">查看</a>
+  	</display:column>
 </display:table>
 </div>
 </c:if>
