@@ -150,35 +150,37 @@ public class TimeOffSearchAction extends BaseAction{
 		if(!dno.equals(""))sql.append("AND c.DeptNo='"+dno+"'");
 		if(!gno.equals(""))sql.append("AND c.Grade='"+gno+"'");
 		if(!zno.equals(""))sql.append("AND c.SeqNo='"+zno+"'");
+		//不採用SQL過濾，改用程式過濾
 		//sql.append("HAVING beginCnt>"+more+" AND endCnt>"+more+" AND "
 		//+ "endCnt<"+less+" ORDER BY c.ClassNo");
-		sql.append("HAVING endCnt>"+more+" AND "
-		+ "endCnt<"+less+" ORDER BY c.ClassNo");
-		
-		
+		//sql.append("HAVING endCnt>"+more+" AND "
+		//+ "endCnt<"+less+" ORDER BY c.ClassNo");
+		sql.append("ORDER BY c.ClassNo, s.student_no");
 		
 		List<Map>stds=df.sqlGet(sql.toString());
+		
+		int beginCnt, endCnt, less=Integer.parseInt(this.less),  more=Integer.parseInt(this.more);		
+		
 		List <Map>list=new ArrayList();
-		List tmp;
-		int beginCnt, more=Integer.parseInt(this.more);
+		List tmp, tmp1=new ArrayList();
+		
 		for(int i=0; i<stds.size(); i++){
+			endCnt=Integer.parseInt(stds.get(i).get("endCnt").toString());
 			beginCnt=Integer.parseInt(stds.get(i).get("beginCnt").toString());
-			System.out.println(beginCnt);
-			tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m/%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+stds.get(i).get("student_no")+"'");
-			stds.get(i).put("dilgs", tmp);
-			
-			if(beginCnt==0){
-				list.add(stds.get(i));
-			}else{
-				if(beginCnt>more)list.add(stds.get(i));
+			//前期曠課少於或等於臨界低點，而且當期曠課多於或等於臨界低點，而且當期曠課少於臨界高點。
+			if(beginCnt<=more && endCnt>=more && endCnt<less){
+					
+				tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m/%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+stds.get(i).get("student_no")+"'");
+				stds.get(i).put("dilgs", tmp);
+				tmp1.add(stds.get(i));
+				
 			}
-			
 			
 		}
 		
 		
 		ListMail lm=new ListMail();
-		lm.print(response, stds, beginDate, endDate);
+		lm.print(response, tmp1, beginDate, endDate);
 		lm=null;		
 		return null;
 	}

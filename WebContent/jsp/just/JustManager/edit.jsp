@@ -82,15 +82,10 @@ $(document).ready(function() {
 		<div class="input-append control-group info">
 		<select name="absType">
 			<option value=""></option>
-   			<option <c:if test="${absType eq '1'}">selected</c:if> value="1">住院</option>
-   			<option <c:if test="${absType eq '2'}">selected</c:if> value="2">曠課</option>
-   			<option <c:if test="${absType eq '3'}">selected</c:if> value="3">病假</option>
-   			<option <c:if test="${absType eq '4'}">selected</c:if> value="4">事假</option>
-   			<option <c:if test="${absType eq '5'}">selected</c:if> value="5">遲到</option>
-   			<option <c:if test="${absType eq '6'}">selected</c:if> value="6">公假</option>
-   			<option <c:if test="${absType eq '7'}">selected</c:if> value="7">喪假</option>
-   			<option <c:if test="${absType eq '8'}">selected</c:if> value="8">婚假</option>
-   			<option <c:if test="${absType eq '9'}">selected</c:if> value="9">產假</option>
+			<c:forEach items="${CODE_DILG_RULES}" var="c">
+				<option <c:if test="${absType eq c.id}">selected</c:if> value="${c.id}">${c.name}</option>
+			</c:forEach>
+   			
    		</select>
    		<button class="btn btn-info" name="method:addDilg" type="submit">建立學生缺曠</button>
    		</div>
@@ -126,15 +121,9 @@ $(document).ready(function() {
 		<c:if test="${dd.result!=null&&dd.result ne '2'}">class="control-group success"</c:if>>
 		<select name="abs" onChange="$('#Oid${dd.Oid}').val('${dd.Oid}')">
 			<option value="">刪除</option>
-   			<option <c:if test="${dd.abs eq '1'}">selected</c:if> value="1">住院</option>
-   			<option <c:if test="${dd.abs eq '2'}">selected</c:if> value="2">曠課</option>
-   			<option <c:if test="${dd.abs eq '3'}">selected</c:if> value="3">病假</option>
-   			<option <c:if test="${dd.abs eq '4'}">selected</c:if> value="4">事假</option>
-   			<option <c:if test="${dd.abs eq '5'}">selected</c:if> value="5">遲到</option>
-   			<option <c:if test="${dd.abs eq '6'}">selected</c:if> value="6">公假</option>
-   			<option <c:if test="${dd.abs eq '7'}">selected</c:if> value="7">喪假</option>
-   			<option <c:if test="${dd.abs eq '8'}">selected</c:if> value="8">婚假</option>
-   			<option <c:if test="${dd.abs eq '9'}">selected</c:if> value="9">產假</option>
+			<c:forEach items="${CODE_DILG_RULES}" var="c">
+				<option <c:if test="${dd.abs eq c.id}">selected</c:if> value="${c.id}">${c.name}</option>
+			</c:forEach>   			
    		</select>
    		</span>
    		</div>

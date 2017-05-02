@@ -41,9 +41,14 @@ $(document).ready(function() {
 	<tr>
 		
 		<td width="100%" nowrap colspan="2">
+		<div class="input-group">
+      	<div class="input-group-addon">自</div>
 		<input type="text" style="width:180px;" id="beginDate" class="form-control" placeholder="點一下輸入日期" name="beginDate" value="${beginDate}"/>
+		</div>
+		<div class="input-group">
+      	<div class="input-group-addon">至</div>
 		<input type="text" style="width:180px;" id="endDate" class="form-control" placeholder="點一下輸入日期" name="endDate" value="${endDate}"/>					
-		
+		</div>
 		<div class="btn-group" role="group">
 			<div class="btn btn-info help" data-toggle="popover" title="說明" 
 			data-content="依據查詢範圍列出班級" data-placement="bottom">?</div>
@@ -69,7 +74,7 @@ $(document).ready(function() {
 		</select>
 		
 		<div class="input-group">
-      	<div class="input-group-addon">多於</div>
+      	<div class="input-group-addon">多於或等於</div>
       	<input type="text" style="width:80px;" class="form-control" name="more" value="${more}"/>
     	</div>
 		
@@ -98,7 +103,7 @@ $(document).ready(function() {
 </div>
 </form>
 <script>
-$("input[name='beginDate'], input[name='endDate']" ).datepicker();
+$("input[name='beginDate'], input[name='endDate']" ).datetimepicker();
 </script>
 </body>
 </html>

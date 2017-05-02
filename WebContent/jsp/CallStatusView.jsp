@@ -56,7 +56,7 @@ $(document).ready(function() {
 <display:table name="${result}" id="row" class="table table-striped table-bordered" sort="list" requestURI="CallStatusView?method=search">
 	<display:column style="white-space:nowrap;" title="星期節次" sortable="true">
   	<c:forEach items="${row.stamp}" var="c">
-  	周${c.week}第${c.begin}~${c.end}節<br> 
+  	週${c.week}第${c.begin}~${c.end}節<br> 
   	</c:forEach>
   	</display:column>
 	<display:column title="開課班級" property="ClassName" sortable="true" />
