@@ -789,7 +789,7 @@ public class ListMail {
 				out.println ("                        <w:rFonts w:hint='fareast'/>");
 				out.println ("                        <wx:font wx:val='新細明體'/>");
 				out.println ("                      </w:rPr>");
-				out.println ("                      <w:t>"+list.get(i).get("student_no")+" "+list.get(i).get("student_name")+" "+list.get(i).get("parent_name")+" 缺曠"+list.get(i).get("cnt")+"節</w:t>");			
+				out.println ("                      <w:t>"+list.get(i).get("student_no")+" "+list.get(i).get("student_name")+" "+list.get(i).get("parent_name")+" 缺曠"+list.get(i).get("endCnt")+"節</w:t>");			
 				out.println ("                    </w:r>");
 				out.println ("                  </w:p>");
 			}

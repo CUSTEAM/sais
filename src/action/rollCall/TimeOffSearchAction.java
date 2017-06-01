@@ -143,7 +143,7 @@ public class TimeOffSearchAction extends BaseAction{
 		+ "student_no=s.student_no AND date<='"+beginDate+"'AND abs='2')as beginCnt,"
 		+ "(SELECT COUNT(*)FROM Dilg WHERE student_no=s.student_no "
 		+ "AND date<='"+endDate+"' AND abs='2')as endCnt,"
-		+ "c.ClassName,s.student_no, s.student_name,s.parent_name,"
+		+ "c.ClassName,s.student_no, s.student_name, IFNULL(s.parent_name, s.student_name)as parent_name,"
 		+ "s.curr_addr,s.curr_post FROM Class c,stmd s WHERE c.CampusNo='"+cno+"' AND c.ClassNo=s.depart_class ");
 		
 		if(!sno.equals(""))sql.append("AND c.SchoolNo='"+sno+"'");
@@ -163,12 +163,12 @@ public class TimeOffSearchAction extends BaseAction{
 		
 		List <Map>list=new ArrayList();
 		List tmp, tmp1=new ArrayList();
-		
+		System.out.println(sql);
 		for(int i=0; i<stds.size(); i++){
 			endCnt=Integer.parseInt(stds.get(i).get("endCnt").toString());
 			beginCnt=Integer.parseInt(stds.get(i).get("beginCnt").toString());
 			//前期曠課少於或等於臨界低點，而且當期曠課多於或等於臨界低點，而且當期曠課少於臨界高點。
-			if(beginCnt<=more && endCnt>=more && endCnt<less){
+			if(beginCnt<more && endCnt>=more && endCnt<less){
 					
 				tmp=df.sqlGet("SELECT d.cls, DATE_FORMAT(d.date,'%m/%d')as date FROM Dilg d WHERE date<='"+endDate+"' AND d.abs='2' AND d.student_no='"+stds.get(i).get("student_no")+"'");
 				stds.get(i).put("dilgs", tmp);

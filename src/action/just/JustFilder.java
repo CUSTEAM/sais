@@ -315,6 +315,7 @@ public class JustFilder extends BaseAction{
 			}
 		}
 		sb.append(" ORDER BY c.ClassNo");
+		System.out.println(sb);
 		tmp=df.sqlGet(sb.toString());
 	}	
 	
