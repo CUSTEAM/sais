@@ -106,86 +106,89 @@ onkeyup="return ValidateNumber($(this),value)"*/
 		</td>
 	</tr>
 </table>
-
+</div>
 
 
 <input type="hidden" name="editStd" id="editStd" />
 
 <c:if test="${!empty stds}">
 <div class="alert alert-danger">
-    <p>所有欄位自由修改，輸入時程式不會做任何自動計算</p>
+    <p>下列欄位自由修改，輸入時程式不會做任何自動計算。</p>
+    <p>修改缺曠記錄或1/3標記，請點選學號開啟缺曠列表。</p>
 </div>
+<div class="panel panel-primary">
+<div class="panel-heading">結算範圍</div>
 <table class="table">
 	<tr>
-		<td class="text-info" nowrap>學號</td>
-		<td class="text-info" nowrap>姓名</td>
-		<td class="text-info" nowrap>導師</td>
-		<td class="text-info" nowrap>主任</td>
-		<td class="text-info" nowrap>教官</td>
-		<td class="text-info" nowrap>缺曠</td>							
-		<td class="text-info" nowrap>獎懲</td>
-		<td class="text-info" nowrap>操評會</td>
-		<td class="text-info" nowrap>成績</td>
-		<td class="text-info" nowrap>評語一</td>
-		<td class="text-info" nowrap>評語二</td>
-		<td class="text-info" nowrap>評語三</td>
-		<td class="text-info" width="100%"></td>
+		<td nowrap>學號</td>
+		<td nowrap>姓名</td>
+		<td nowrap>導師</td>
+		<td nowrap>主任</td>
+		<td nowrap>教官</td>
+		<td nowrap>缺曠</td>							
+		<td nowrap>獎懲</td>
+		<td nowrap>操評會</td>
+		<td nowrap>成績</td>
+		<td nowrap>評語一</td>
+		<td nowrap>評語二</td>
+		<td nowrap>評語三</td>
+		<td width="100%"></td>
 	</tr>
 	<c:forEach items="${stds}" var="s">
 		<tr>
-			<td class="text-info" nowrap>
+			<td nowrap>
 			<input type="hidden" name="student_no"  value="${s.student_no}" />
-			<button class="btn btn-link" onMouseOver="$('#editStd').val('${s.student_no}')" name="method:edit" type="submit">${s.student_no}</button></td>
-			<td class="text-info" nowrap><button onMouseOver="$('#editStd').val('${s.student_no}')" class="btn btn-link" name="method:edit" type="submit">${s.student_name}</button></td>
+			<button class="btn btn-link btn-lg" onMouseOver="$('#editStd').val('${s.student_no}')" name="method:edit" type="submit">${s.student_no}</button></td>
+			<td nowrap><button onMouseOver="$('#editStd').val('${s.student_no}')" class="btn btn-link btn-lg" name="method:edit" type="submit">${s.student_name}</button></td>
 			
-			<td class="control-group info">								
+			<td>								
 				<input id="teacher_score${s.student_no}" name="teacher_score" value="${s.teacher_score}" 
-				type="text" class="span1" style="ime-mode:disabled" autocomplete="off" maxlength="2"/>				
+				type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>				
 			</td>
 											
-			<td class="control-group info">								
+			<td>								
 				<input id="deptheader_score${s.student_no}" name="deptheader_score" value="${s.deptheader_score}" 
-				type="text" class="span1" style="ime-mode:disabled" autocomplete="off" maxlength="2"/>
+				type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 			</td>
 			
-			<td class="control-group info">
+			<td>
 				<input id="military_score${s.student_no}" name="military_score" value="${s.military_score}" 
-				type="text" class="span1" style="ime-mode:disabled" autocomplete="off" maxlength="2"/>
+				type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 			</td>			
-			<td class="control-group info" nowrap>
-				<input id="dilg_score${s.student_no}" value="${s.dilg_score}" autocomplete="off" name="dilg_score"type="text" class="span1"/>
+			<td nowrap>
+				<input id="dilg_score${s.student_no}" value="${s.dilg_score}" name="dilg_score"type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 			</td>																
-			<td class="control-group info" nowrap>
-				<input id="desd_score${s.student_no}" value="${s.desd_score}" autocomplete="off" name="desd_score" type="text" class="span1"/>
+			<td nowrap>
+				<input id="desd_score${s.student_no}" value="${s.desd_score}" name="desd_score" type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 			</td>
-			<td class="control-group info" nowrap>
+			<td nowrap>
 				<input id="meeting_score${s.student_no}" value="${s.meeting_score}" name="meeting_score" 
-				type="text" class="span1" style="ime-mode:disabled" autocomplete="off" maxlength="3" class="span1"/>
+				type="text" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 				</td>
-			<td class="control-group info" nowrap>
-				<input id="total_score${s.student_no}" name="total_score" value="${s.total_score}"type="text" maxlength="2" autocomplete="off" onkeyup="return ValidateNumber($(this),value)" class="span1"/>
+			<td nowrap>
+				<input style="width:100px;" id="total_score${s.student_no}" name="total_score" value="${s.total_score}"type="text" onkeyup="return ValidateNumber($(this),value)" class="form-control" style="width:60px;ime-mode:disabled" autocomplete="off" maxlength="2"/>
 			</td>
-			<td class="control-group info" nowrap>
-				<input name="com_code1" type="text" class="span2" value="${s.com_code1}" placeholder="輸入代碼或名稱片段" />								
+			<td nowrap>
+				<input style="width:100px;" name="com_code1" type="text" class="form-control" value="${s.com_code1}" placeholder="輸入代碼或名稱片段" />								
 			</td>
-			<td class="control-group info" nowrap>
-				<input name="com_code2" type="text" class="span2" value="${s.com_code2}" placeholder="輸入代碼或名稱片段" />
+			<td nowrap>
+				<input style="width:100px;" name="com_code2" type="text" class="form-control" value="${s.com_code2}" placeholder="輸入代碼或名稱片段" />
 			</td>
-			<td class="control-group info" nowrap>
-				<input name="com_code3" type="text" class="span2" value="${s.com_code3}" placeholder="輸入代碼或名稱片段" />
+			<td nowrap>
+				<input style="width:100px;" name="com_code3" type="text" class="form-control" value="${s.com_code3}" placeholder="輸入代碼或名稱片段" />
 			</td>
 			<td nowrap width="100%"></td>
 		</tr>
 		
 	</c:forEach>
-		<tr>
-			<td colspan="13" align="right">
-			<button class="btn btn btn-success" name="method:save" type="submit">儲存</button>
-			<a href="JustManager" class="btn">返回</a>
-			</td>
-		</tr>
+		
 	</table>
+	<div class="panel-body">
+		<button class="btn btn btn-success" name="method:save" type="submit">儲存</button>
+		<a href="JustManager" class="btn">返回</a>
+	</div>
 	
+	</div>
 </c:if>
 </form>
 </body>

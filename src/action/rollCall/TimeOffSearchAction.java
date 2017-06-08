@@ -163,7 +163,7 @@ public class TimeOffSearchAction extends BaseAction{
 		
 		List <Map>list=new ArrayList();
 		List tmp, tmp1=new ArrayList();
-		System.out.println(sql);
+		//System.out.println(sql);
 		for(int i=0; i<stds.size(); i++){
 			endCnt=Integer.parseInt(stds.get(i).get("endCnt").toString());
 			beginCnt=Integer.parseInt(stds.get(i).get("beginCnt").toString());
