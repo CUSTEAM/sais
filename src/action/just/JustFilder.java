@@ -1,8 +1,11 @@
 package action.just;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +15,8 @@ import action.just.justFilder.testPrint;
 
 public class JustFilder extends BaseAction{
 	
-	public String cno;
-	public String tno;
+	public String cno, gcno;
+	public String tno, gtno;
 	public String grade;
 	public String endDate;	
 	public String gradEndKillDate;
@@ -26,17 +29,51 @@ public class JustFilder extends BaseAction{
 	
 	public String execute(){
 		
+		request.setAttribute("justLog", df.sqlGet("SELECT * FROM JustLog ORDER BY Oid DESC"));
+		
 		return SUCCESS;
 	}
 	
 	private List<Map>tmp;
+	
+	private boolean checkDate(String d){		
+		Calendar c=Calendar.getInstance();		
+		try {
+			c.setTime(sf.parse(d));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		if((c.getTime().getTime()+691200000)<new Date().getTime()){
+			return false;
+		}		
+		return true;
+	}
+	
+	public String rollback(){
+		
+		StringBuilder sql=new StringBuilder("UPDATE Just SET total_score=null WHERE student_no IN("
+		+ "SELECT s.student_no FROM Class c, stmd s WHERE c.ClassNo=s.depart_class AND "
+		+ "c.CampusNo='"+cno+"' AND c.SchoolType='"+tno+"'");
+		if(!grade.equals("")){
+			sql.append("AND c.graduate='"+grade+"'");
+		}
+		sql.append(")");
+		df.exSql(sql.toString());
+		
+		df.exSql("INSERT INTO JustLog(graduate,school_year, school_term, CampuseNo, SchoolType, checkDate, cname, note)VALUES" +
+		"('"+grade+"','"+getContext().getAttribute("school_year")+"', '"+getContext().getAttribute("school_term")+"', '"+cno+"', '"+tno+
+		"', '"+sf.format(new Date())+"', '"+df.sqlGetStr("SELECT cname FROM empl WHERE idno='"+
+		getSession().getAttribute("userid")+"'")+"','復原結算')");
+		return execute();
+	}
 	
 	/**
 	 * 試算
 	 * @return
 	 * @throws IOException 
 	 */
-	public String test() throws IOException{		
+	public String test() throws IOException{
 		if(checkTotalScore()){
 			Message msg=new Message();
 			msg.setError("成績已結算");
@@ -51,13 +88,25 @@ public class JustFilder extends BaseAction{
 			return execute();
 		}
 		
-		leadConut();//建立計算範圍
+		if(checkDate(endDate)){
+			Message msg=new Message();
+			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			this.savMessage(msg);
+			return execute();
+		}
+		
+		leadConut(false);//建立計算範圍
 		setExam();//計算並寫入扣考
 			
 		List<Map>cls=new ArrayList();//資料容器
 		cls=setDetail(tmp, cls, false, false);		
 		export(cls);
 		//recoverSeld();//復原扣考
+		//小人難防 TODO 儘早加入頁面安全機制
+		df.exSql("INSERT INTO JustLog(graduate,school_year, school_term, CampuseNo, SchoolType, checkDate, cname, note)VALUES" +
+		"('"+grade+"','"+getContext().getAttribute("school_year")+"', '"+getContext().getAttribute("school_term")+"', '"+cno+"', '"+tno+
+		"', '"+sf.format(new Date())+"', '"+df.sqlGetStr("SELECT cname FROM empl WHERE idno='"+
+		getSession().getAttribute("userid")+"'")+"','試算至"+endDate+"')");
 		return null;		
 	}
 	
@@ -75,14 +124,34 @@ public class JustFilder extends BaseAction{
 			return execute();
 		}
 		
-		leadConut();//設定範圍
+		if(checkDate(endDate)){
+			Message msg=new Message();
+			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			this.savMessage(msg);
+			return execute();
+		}
+		
+		//System.out.println(grade);
+		leadConut(false);//設定範圍
+		
+		
+		
 		if(!checkTotalScore()){
 			setExam();//初次結算才計算並寫入扣考
 		}	
 		
 		List<Map>cls=new ArrayList();
+		
+		
 		cls=setDetail(tmp, cls, true, false);	
-		export(cls);		
+		export(cls);	
+		
+		
+		
+		df.exSql("INSERT INTO JustLog(graduate,school_year, school_term, CampuseNo, SchoolType, checkDate, cname, note)VALUES" +
+		"('"+grade+"','"+getContext().getAttribute("school_year")+"', '"+getContext().getAttribute("school_term")+"', '"+cno+"', '"+tno+
+		"', '"+sf.format(new Date())+"', '"+df.sqlGetStr("SELECT cname FROM empl WHERE idno='"+
+		getSession().getAttribute("userid")+"'")+"','結算至"+endDate+"')");
 		return null;	
 	}
 	
@@ -299,11 +368,23 @@ public class JustFilder extends BaseAction{
 	/**
 	 * 設定計算範圍
 	 */
-	private void leadConut(){
+	private void leadConut(boolean recnt){
 		
 		//建立班級範圍
-		StringBuilder sb=new StringBuilder("SELECT IFNULL(e.cname, '未指定')as cname, (SELECT COUNT(*)FROM stmd WHERE stmd.depart_class=c.ClassNo)as " +
-		"cnt, c.ClassNo, c.ClassName FROM Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno WHERE c.CampusNo='"+cno+"' AND c.SchoolType='"+tno+"'");
+		StringBuilder sb;
+		if(recnt){
+			sb=new StringBuilder("SELECT IFNULL(e.cname, '未指定')as cname, "
+			+ "(SELECT COUNT(*)FROM stmd WHERE stmd.depart_class=c.ClassNo)as " +
+			"cnt, c.ClassNo, c.ClassName FROM Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno "
+			+ "WHERE c.CampusNo='"+gcno+"' AND c.SchoolType='"+gtno+"'");
+			grade="1";
+		}else{
+			sb=new StringBuilder("SELECT IFNULL(e.cname, '未指定')as cname, "
+			+ "(SELECT COUNT(*)FROM stmd WHERE stmd.depart_class=c.ClassNo)as " +
+			"cnt, c.ClassNo, c.ClassName FROM Class c LEFT OUTER JOIN empl e ON c.tutor=e.idno "
+			+ "WHERE c.CampusNo='"+cno+"' AND c.SchoolType='"+tno+"'");
+			
+		}
 		
 		if(!grade.equals("")){
 			if(grade.equals("0")){
@@ -315,7 +396,7 @@ public class JustFilder extends BaseAction{
 			}
 		}
 		sb.append(" ORDER BY c.ClassNo");
-		System.out.println(sb);
+		//System.out.println(sb);
 		tmp=df.sqlGet(sb.toString());
 	}	
 	
@@ -368,27 +449,40 @@ public class JustFilder extends BaseAction{
 			return execute();
 		}
 		
-		if(!grade.equals("1")){
+		if(checkDate(endDate)){
+			Message msg=new Message();
+			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			this.savMessage(msg);
+			return execute();
+		}
+		
+		if(checkDate(gradEndKillDate)){
+			Message msg=new Message();
+			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			this.savMessage(msg);
+			return execute();
+		}
+		/*if(!grade.equals("1")){
 			Message msg=new Message();
 			msg.setError("範圍請指定畢業班");
 			this.savMessage(msg);
 			return execute();
-		}
+		}*/
 			
-		//暫存非畢業班的Dilg
-		List<Map>d=df.sqlGet("SELeCT * FROM Dilg WHERE Dtime_oid IN(SELECT Dtime.Oid FROM Dtime, Class WHERE " +
+		//暫存範圍內畢業班課程的Dilg
+		List<Map>d=df.sqlGet("SELeCT * FROM Dilg WHERE Dtime_oid IN(SELECT Dtime.Oid FROM Dtime, Class WHERE Class.CampusNo='"+gcno+"'AND Class.SchoolType='"+gtno+"'AND " +
 		"Dtime.depart_class=Class.ClassNo AND Class.graduate='1' AND Dtime.Sterm='2')AND date>'"+gradEndKillDate+"'");
 		
-		//暫時清除非畢業班的Dilg
-		df.exSql("DELETE FROM Dilg WHERE Dtime_oid IN(SELECT Dtime.Oid FROM Dtime, Class WHERE " +
+		//暫時清除範圍內畢業班課程的Dilg
+		df.exSql("DELETE FROM Dilg WHERE Dtime_oid IN(SELECT Dtime.Oid FROM Dtime, Class WHERE Class.CampusNo='"+gcno+"'AND Class.SchoolType='"+gtno+"'AND " +
 		"Dtime.depart_class=Class.ClassNo AND Class.graduate='1' AND Dtime.Sterm='2')AND date>'"+gradEndKillDate+"'");		
 		//計算
-		leadConut();
+		leadConut(true);
 		setExam();//計算並寫入扣考
 		List<Map>cls=new ArrayList();//資料容器			
 		cls=setDetail(tmp, cls, true, true);
 		
-		//塞回非畢業班的dilg
+		//塞回畢業班的dilg
 		for(int i=0; i<d.size(); i++){			
 			df.exSql("INSERT INTO Dilg(Oid,student_no,date,cls,abs,Dtime_oid,earlier,Dilg_app_oid)VALUES" +
 			"("+d.get(i).get("Oid")+",'"+d.get(i).get("student_no")+"','"+d.get(i).get("date")+"'," +
@@ -396,6 +490,10 @@ public class JustFilder extends BaseAction{
 			d.get(i).get("earlier")+","+d.get(i).get("Dilg_app_oid")+");");
 		}
 		
+		df.exSql("INSERT INTO JustLog(graduate,school_year, school_term, CampuseNo, SchoolType, checkDate, cname, note)VALUES" +
+		"('1','"+getContext().getAttribute("school_year")+"', '"+getContext().getAttribute("school_term")+"', '"+gcno+"', '"+gtno+
+		"', '"+sf.format(new Date())+"', '"+df.sqlGetStr("SELECT cname FROM empl WHERE idno='"+
+		getSession().getAttribute("userid")+"'")+"','下修畢業班課程至"+gradEndKillDate+"非畢業班"+gradEnd+"')");
 		export(cls);		
 		return null;
 	}

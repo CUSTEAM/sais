@@ -78,11 +78,13 @@ $(document).ready(function() {
 	<tr>
 		<td nowrap>結算日期</td>
 		<td colspan="2">			
-			<div class="input-append control-group info" style="float:left">		
+					
 				<input class="form-control" type="text" id="endDate" placeholder="點一下輸入日期" name="endDate" value="${endDate}"/>				
 				<button class="btn btn-default" name="method:test" type="submit">列印試算總成績</button>				
+				<div class="btn-group" role="group" aria-label="...">
 				<button onClick="javascript: return(confirm('確定結算?')); void('')" class="btn btn-danger" name="method:count" type="submit">列印結算總成績</button>
-			</div>
+				<button onClick="javascript: return(confirm('確定復原?')); void('')" class="btn btn-default" name="method:rollback" type="submit">還原</button>
+				</div>
 			&nbsp;
 			<div id="funbtn" rel="popover" title="說明" 
 			data-content="試算動作可進行多次，依部㓡人數不同約在5~10秒之內完成請耐心等候。為確保1/3缺課名單，結算僅可進行一次(除畢業班)，重複點選結算無任何作用。修正1/3缺課名單，請告知註冊及課務單位依規定辦理" 
@@ -111,26 +113,86 @@ $(document).ready(function() {
 </ul>
 <table class="table">
 	<tr>
-		<td class="text-error" nowrap>畢業下修</td>
-		<td class="control-group error">
-			<input class="form-control" type="text" id="gradEndKillDate" placeholder="畢業班課程結算日期" name="gradEndKillDate" value="${gradEndKillDate}"/>
+		<td nowrap>畢業下修</td>
+		<td nowrap>
+		<select name="gcno" class="selectpicker" data-width="auto">
+			<option <c:if test="${cno eq '1'}">selected</c:if> value="1">台北校區</option>
+			<option <c:if test="${cno eq '2'}">selected</c:if> value="2">新竹校區</option>
+			<option <c:if test="${cno eq '3'}">selected</c:if> value="3">雲林校區</option>
+		</select>
+
+		<select name="gtno" class="selectpicker" data-width="auto">
+			<option <c:if test="${cno eq 'D'}">selected</c:if> value="D">日間部</option>
+			<option <c:if test="${cno eq 'H'}">selected</c:if> value="N">進修部</option>
+			<option <c:if test="${cno eq 'N'}">selected</c:if> value="H">進修學院</option>
+		</select>
 		</td>
-		<td class="control-group error" nowrap>			
-			<div class="input-append control-group danger" style="float:left;">
+		<td nowrap>
+		<input class="form-control" type="text" id="gradEndKillDate" placeholder="畢業班課程結算日期" name="gradEndKillDate" value="${gradEndKillDate}"/>
+		</td>
+		<td nowrap>
+		<div class="input-append control-group danger" style="float:left;">
 				<input class="form-control" type="text" id="gradEnd" placeholder="下修低年級課程結算日期" name="gradEnd" value="${gradEnd}"/>			
 				<button class="btn btn-danger" name="method:reCount" type="submit">重新結算總成績</button>
 			</div>
-			&nbsp;
-			<div id="idiotbtn" rel="popover" title="說明" 
+		&nbsp;
+		<div id="idiotbtn" rel="popover" title="說明" 
 			data-content="左側欄為「畢業班課程結算日期」右側欄為「下修低年級課程結算日期」,系統依左側欄計算畢業班開設課程的缺曠、依右側欄計算下修課程的缺曠、依左側欄排除畢業班結算後老師新增的曠缺記錄" 
-			data-placement="right" class="btn btn-warning">?</div>		
+			data-placement="right" class="btn btn-warning">?</div>
 		</td>
-		<td width="100%"></td>		
+		<td width="100%"></td>
 	</tr>
 	
 </table>
 </div>
 
+<c:if test="${!empty justLog}">
+<div class="panel panel-primary">
+<div class="panel-heading">執行記錄</div>
+<table class="table">
+	<tr>		
+		<td nowrap>學年</td>
+		<td nowrap>學期</td>
+		<td nowrap>校區</td>
+		<td nowrap>部制</td>
+		<td nowrap>執行人員</td>
+		<td nowrap>日期</td>
+		<td width="100%"></td>
+	</tr>
+	<c:forEach items="${justLog}" var="c">
+	<tr>
+		<td>${c.school_year}</td>
+		<td>${c.school_term}</td>
+		<td>				
+		<select disabled class="form-control">
+			<c:forEach items="${allCampus}" var="a">
+			<option  <c:if test="${c.CampuseNo==a.idno}">selected</c:if> value="${a.idno}">${a.name}</option>
+			</c:forEach>
+		</select>
+		</td>
+		<td nowrap>
+		<select disabled class="form-control">
+			<c:forEach items="${allSchoolType}" var="t">
+			<option <c:if test="${c.SchoolType==t.idno}">selected</c:if> value="${t.idno}">${t.name}</option>
+			</c:forEach>
+		</select>
+		
+		<select disabled class="form-control">			
+			<option <c:if test="${c.graduate eq''}">selected</c:if>>全部</option>
+			<option <c:if test="${c.graduate eq'0'}">selected</c:if>>非畢業班</option>
+			<option <c:if test="${c.graduate eq'1'}">selected</c:if>>畢業班</option>
+			<option <c:if test="${c.graduate eq'2'}">selected</c:if>>延修班</option>
+		</select>
+		</td>
+		
+		<td nowrap>${c.cname}</td>
+		<td nowrap>${c.checkDate}</td>
+		<td >${c.note}</td>
+	</tr>
+	</c:forEach>
+</table>
+</div>
+</c:if>
 
 </form>
     
