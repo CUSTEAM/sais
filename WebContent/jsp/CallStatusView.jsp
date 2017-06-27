@@ -8,6 +8,8 @@
 <script src="/eis/inc/js/plugin/jquery-ui.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 <link href="/eis/inc/css/jquery-ui.css" rel="stylesheet"/>
+<script src="/eis/inc/js/plugin/bootstrap-typeahead.js"></script>
+<script src="/eis/inc/js/autoComplete.js"></script>
 <title>點名狀況查詢</title>
 <script>  
 $(document).ready(function() {
@@ -46,6 +48,14 @@ $(document).ready(function() {
 		
 			<input class="form-control" type="text" placeholder="點一下輸入日期" name="end" value="${end}"/>
 			<button class="btn btn-info" name="method:search" type="submit">依範圍查詢</button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<div class="input-group">
+		  	<span class="input-group-addon">授課教師</span>
+		  	<input type="text" placeholder="教師完整姓名" class="form-control techid" style="width:350px;" name="techid" id="techid" value="${techid}" onClick="this.value='';" autocomplete="off" data-provide="typeahead"/>
+		</div>
 		</td>
 	</tr>
 </table>

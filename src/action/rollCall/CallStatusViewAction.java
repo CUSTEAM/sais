@@ -21,7 +21,7 @@ public class CallStatusViewAction extends BaseAction{
 	public String sno;
 	public String dno;
 	public String grade;
-	public String class_no;
+	public String class_no, techid;
 	public int num;
 	
 	public String execute() throws Exception {
@@ -115,12 +115,17 @@ public class CallStatusViewAction extends BaseAction{
 			return SUCCESS;
 		}	
 		
-		
-		List<Map>list=df.sqlGet("SELECT cl.ClassName, c.chi_name, d.Oid, e.cname, (SELECT COUNT(*)FROM Dilg WHERE Dtime_oid=d.Oid AND date>='"+begin+"' AND date<='"+end+"') as dilgCnt, " +
+		StringBuilder sql=new StringBuilder("SELECT cl.ClassName, c.chi_name, d.Oid, e.cname, (SELECT COUNT(*)FROM Dilg WHERE Dtime_oid=d.Oid AND date>='"+begin+"' AND date<='"+end+"') as dilgCnt, " +
 				"(SELECT COUNT(*)FROM DilgLog WHERE Dtime_oid=d.Oid)as logCnt FROM Csno c, Class cl, (Dtime d LEFT OUTER JOIN " +
 				"empl e ON d.techid=e.idno)LEFT OUTER JOIN Dilg g ON g.Dtime_oid=d.Oid AND g.date>='"+begin+"' AND g.date<='"+end+"' WHERE " +
 				"cl.ClassNo=d.depart_class AND c.cscode=d.cscode AND d.Sterm='"+getContext().getAttribute("school_term")+"' AND cl.CampusNo='"+
-				cno+"' AND cl.SchoolNo LIKE'"+sno+"%' AND cl.DeptNo LIKE '"+dno+"%' GROUP BY d.Oid");
+				cno+"' AND cl.SchoolNo LIKE'"+sno+"%' AND cl.DeptNo LIKE '"+dno+"%'");
+		if(!techid.equals(""))sql.append("AND d.techid ='"+df.sqlGetStr("SELECT idno FROM empl WHERE Oid="+techid.substring(0, techid.indexOf(",")))+"'");
+		sql.append("GROUP BY d.Oid");
+		
+		//System.out.println(sql);
+		List<Map>list=df.sqlGet(sql.toString());		
+		
 		for(int i=0; i<list.size(); i++){
 			list.get(i).put("stamp", df.sqlGet("SELECT week, begin, end FROM Dtime_class WHERE Dtime_oid="+list.get(i).get("Oid")));
 		}

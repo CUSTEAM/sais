@@ -58,7 +58,7 @@ $(document).ready(function() {
 <div class="panel-heading">結算範圍</div>
 <ul class="list-group">
 <li class="list-group-item"><span class="label label-as-badge label-warning">1</span> 試算動作時即產生1/3缺課暫時名單, 重新試算會依據目前的缺課記錄更新暫存名單</li>
-<li class="list-group-item"><span class="label label-as-badge label-warning">2</span> 結算動作完成後會凍結所有影響操行成績的相關操作</li>
+<li class="list-group-item"><span class="label label-as-badge label-warning">2</span> 結算動作完成後會關閉所有相關操作, 選定範圍還原可重新開放</li>
 <li class="list-group-item"><span class="label label-as-badge label-danger">3</span> 結算後必須以公假或銷假方式更新缺曠記錄，再執行 <a href="JustManager"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>結算後修正管理</a></li>
 </ul>
 <table class="table">
