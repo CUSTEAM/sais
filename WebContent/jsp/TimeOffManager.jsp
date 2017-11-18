@@ -10,7 +10,6 @@
 
 <title>缺曠記錄管理</title>
 <script src="/eis/inc/js/plugin/bootstrap-typeahead.js"></script>
-<script src="/eis/inc/js/plugin/json2.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui.js"></script>
 <script src="/eis/inc/js/plugin/bootstrap-tooltip.js"></script>
 <script src="/eis/inc/js/plugin/jquery-ui-timepicker-addon.js" type="text/javascript"></script>

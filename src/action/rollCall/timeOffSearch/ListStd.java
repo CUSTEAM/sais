@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import action.BaseAction;
 
 /**
- * 報表2
+ * 學生細節報表
  * @author John
  *
  */
@@ -77,7 +77,8 @@ public class ListStd extends BaseAction{
 		out.println ("    ss:Color='#000000'/>");
 		out.println ("  </Style>");
 		out.println (" </Styles>");
-		out.println (" <Worksheet ss:Name='工作表1'>");
+		
+		out.println (" <Worksheet ss:Name='缺課統計列表'>");
 		out.println ("  <Table ss:ExpandedColumnCount='14' ss:ExpandedRowCount='"+list.size()+1+"' x:FullColumns='1'");
 		out.println ("   x:FullRows='1' ss:StyleID='s78' ss:DefaultColumnWidth='54'");
 		out.println ("   ss:DefaultRowHeight='25.5'>");
@@ -128,16 +129,13 @@ public class ListStd extends BaseAction{
 			out.println ("    <Cell><Data ss:Type='Number'>"+list.get(i).get("abs7")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='Number'>"+list.get(i).get("abs8")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='Number'>"+list.get(i).get("abs9")+"</Data></Cell>");
-			out.println ("   </Row>");
-			
-		}
-		
-		
+			out.println ("   </Row>");			
+		}		
 		out.println ("  </Table>");
 		out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
 		out.println ("   <PageSetup>");
 		out.println ("    <Header x:Margin='0.3'");
-		out.println ("     x:Data='&amp;C&amp;20 "+school_year+"學年第 "+school_term+"學期缺曠嚴重學生名單&#10;"+beginDate+" 至"+endDate+"&amp;R&amp;D-&amp;T&#10;第&amp;P頁 共&amp;N頁'/>");
+		out.println ("     x:Data='&amp;C&amp;20 "+school_year+"學年第 "+school_term+"學期學生缺曠&#10;"+beginDate+" 至"+endDate+"&amp;R&amp;D-&amp;T&#10;第&amp;P頁 共&amp;N頁'/>");
 		out.println ("    <Footer x:Margin='0.3'/>");
 		out.println ("    <PageMargins x:Bottom='0.75' x:Left='0.7' x:Right='0.7' x:Top='0.75'/>");
 		out.println ("   </PageSetup>");
@@ -164,7 +162,78 @@ public class ListStd extends BaseAction{
 		out.println (" </Worksheet>");
 		
 		
-		out.println (" <Worksheet ss:Name='工作表2'>");
+		out.println (" <Worksheet ss:Name='缺課明細列表'>");
+		out.println ("  <Table ss:ExpandedColumnCount='7' ss:ExpandedRowCount='600000' x:FullColumns='1'");
+		out.println ("   x:FullRows='1' ss:DefaultColumnWidth='54' ss:DefaultRowHeight='16.5'>");
+		out.println ("   <Column ss:Width='63'/>");
+		out.println ("   <Column ss:AutoFitWidth='0' ss:Width='37.5'/>");
+		out.println ("   <Row>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>日期</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>節次</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>課程</Data></Cell>");
+		//out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>開課班級</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>教師</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>學號</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>0:生理假,1:重大傷病住院,2:曠課,3:病假,4:事假,5:遲到,6:公假,7:喪假,8:婚假,9:產假</Data></Cell>");
+		out.println ("   </Row>");
+		
+		
+		List<Map>tmp;
+		for(int i=0; i<list.size(); i++){
+			tmp=df.sqlGet("SELECT c.chi_name, d.date, d.student_no, d.cls, d.abs, e.cname,"
+			+ "dt.cscode FROM Csno c, Dilg d, Dtime dt LEFT OUTER JOIN empl e ON e.idno=dt.techid WHERE c.cscode=dt.cscode AND "
+			+ "dt.Oid=d.Dtime_oid AND d.student_no='"+list.get(i).get("student_no")+"'");
+			
+			for(int j=0; j<tmp.size(); j++){
+				out.println ("   <Row>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("date")+"</Data></Cell>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("cls")+"</Data></Cell>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("chi_name")+"</Data></Cell>");
+				//out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("depart_class")+"</Data></Cell>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("cname")+"</Data></Cell>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("student_no")+"</Data></Cell>");
+				out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>"+tmp.get(j).get("abs")+"</Data></Cell>");
+				out.println ("   </Row>");
+			}
+			
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		out.println ("  </Table>");
+		out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
+		out.println ("   <PageSetup>");
+		out.println ("    <Header x:Margin='0.3'/>");
+		out.println ("    <Footer x:Margin='0.3'/>");
+		out.println ("    <PageMargins x:Bottom='0.75' x:Left='0.7' x:Right='0.7' x:Top='0.75'/>");
+		out.println ("   </PageSetup>");
+		out.println ("   <Selected/>");
+		out.println ("   <Panes>");
+		out.println ("    <Pane>");
+		out.println ("     <Number>3</Number>");
+		out.println ("     <ActiveRow>6</ActiveRow>");
+		out.println ("     <ActiveCol>3</ActiveCol>");
+		out.println ("    </Pane>");
+		out.println ("   </Panes>");
+		out.println ("   <ProtectObjects>False</ProtectObjects>");
+		out.println ("   <ProtectScenarios>False</ProtectScenarios>");
+		out.println ("  </WorksheetOptions>");
+		out.println (" </Worksheet>");
+		
+		
+		
+		/*out.println (" <Worksheet ss:Name='工作表3'>");
 		out.println ("  <Table ss:ExpandedColumnCount='1' ss:ExpandedRowCount='1' x:FullColumns='1'");
 		out.println ("   x:FullRows='1' ss:DefaultColumnWidth='54' ss:DefaultRowHeight='16.5'>");
 		out.println ("   <Row ss:AutoFitHeight='0'/>");
@@ -179,26 +248,7 @@ public class ListStd extends BaseAction{
 		out.println ("   <ProtectObjects>False</ProtectObjects>");
 		out.println ("   <ProtectScenarios>False</ProtectScenarios>");
 		out.println ("  </WorksheetOptions>");
-		out.println (" </Worksheet>");
-		
-		
-		
-		out.println (" <Worksheet ss:Name='工作表3'>");
-		out.println ("  <Table ss:ExpandedColumnCount='1' ss:ExpandedRowCount='1' x:FullColumns='1'");
-		out.println ("   x:FullRows='1' ss:DefaultColumnWidth='54' ss:DefaultRowHeight='16.5'>");
-		out.println ("   <Row ss:AutoFitHeight='0'/>");
-		out.println ("  </Table>");
-		out.println ("  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>");
-		out.println ("   <PageSetup>");
-		out.println ("    <Header x:Margin='0.3'/>");
-		out.println ("    <Footer x:Margin='0.3'/>");
-		out.println ("    <PageMargins x:Bottom='0.75' x:Left='0.7' x:Right='0.7' x:Top='0.75'/>");
-		out.println ("   </PageSetup>");
-		out.println ("   <Unsynced/>");
-		out.println ("   <ProtectObjects>False</ProtectObjects>");
-		out.println ("   <ProtectScenarios>False</ProtectScenarios>");
-		out.println ("  </WorksheetOptions>");
-		out.println (" </Worksheet>");
+		out.println (" </Worksheet>");*/
 		
 		
 		

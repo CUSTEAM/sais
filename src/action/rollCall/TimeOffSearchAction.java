@@ -116,7 +116,7 @@ public class TimeOffSearchAction extends BaseAction{
 			sql.append("abs"+abs+">"+more+" ");
 		}				
 		sql.append("ORDER BY c.ClassNo, s.student_no");		
-		System.out.println(sql);
+		//System.out.println(sql);
 		List<Map>list=df.sqlGet(sql.toString());		
 		ListStd ls=new ListStd();
 		ls.print(response, list, beginDate, endDate, getContext().getAttribute("school_year").toString(), getContext().getAttribute("school_term").toString());
