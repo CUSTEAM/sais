@@ -174,7 +174,7 @@ public class ListStd extends BaseAction{
 		//out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>開課班級</Data></Cell>");
 		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>教師</Data></Cell>");
 		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>學號</Data></Cell>");
-		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>0:生理假,1:重大傷病住院,2:曠課,3:病假,4:事假,5:遲到,6:公假,7:喪假,8:婚假,9:產假</Data></Cell>");
+		out.println ("    <Cell ss:StyleID='s76'><Data ss:Type='String'>假別【0:生理假,1:重大傷病住院,2:曠課,3:病假,4:事假,5:遲到,6:公假,7:喪假,8:婚假,9:產假】</Data></Cell>");
 		out.println ("   </Row>");
 		
 		
@@ -182,7 +182,7 @@ public class ListStd extends BaseAction{
 		for(int i=0; i<list.size(); i++){
 			tmp=df.sqlGet("SELECT c.chi_name, d.date, d.student_no, d.cls, d.abs, e.cname,"
 			+ "dt.cscode FROM Csno c, Dilg d, Dtime dt LEFT OUTER JOIN empl e ON e.idno=dt.techid WHERE c.cscode=dt.cscode AND "
-			+ "dt.Oid=d.Dtime_oid AND d.student_no='"+list.get(i).get("student_no")+"'");
+			+ "dt.Oid=d.Dtime_oid AND d.student_no='"+list.get(i).get("student_no")+"'AND d.date>='"+beginDate+"'AND d.date<='"+endDate+"'");
 			
 			for(int j=0; j<tmp.size(); j++){
 				out.println ("   <Row>");
