@@ -66,7 +66,7 @@ public class JustManager extends TimeOffManagerAction{
 				df.exSql("UPDATE Seld SET status=null WHERE student_no='"+stdNo+"'");		
 				//重新標記seld status
 				List<Map>list=df.sqlGet("SELECT d.student_no, d.Dtime_oid, ((dt.thour*18)/3)as thour FROM stmd s, Dilg d, Dtime dt, Class c " +
-				"WHERE s.student_no='"+stdNo+"' AND s.depart_class=c.ClassNo AND s.student_no=d.student_no AND dt.Oid=d.Dtime_oid AND " +
+				"WHERE dt.cscode!='50000'AND s.student_no='"+stdNo+"' AND s.depart_class=c.ClassNo AND s.student_no=d.student_no AND dt.Oid=d.Dtime_oid AND " +
 				"d.abs IN(SELECT id FROM Dilg_rules WHERE exam='1')GROUP BY d.student_no, d.Dtime_oid HAVING COUNT(*)>=thour ");
 				for(int i=0; i<list.size(); i++){
 					df.exSql("UPDATE Seld SET status='1' WHERE student_no='"+list.get(i).get("student_no")+"' AND Dtime_oid="+list.get(i).get("Dtime_oid"));

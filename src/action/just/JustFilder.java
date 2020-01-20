@@ -132,9 +132,7 @@ public class JustFilder extends BaseAction{
 		}
 		
 		//System.out.println(grade);
-		leadConut(false);//設定範圍
-		
-		
+		leadConut(false);//設定範圍		
 		
 		if(!checkTotalScore()){
 			setExam();//初次結算才計算並寫入扣考
@@ -215,6 +213,7 @@ public class JustFilder extends BaseAction{
 			if(dilg>0.0f){//全勤+3分
 				stds.get(i).put("dilg_score_real", String.valueOf(dilg));
 			}else{
+				
 				stds.get(i).put("dilg_score", 3);
 			}
 			total_score=82+(
@@ -283,13 +282,14 @@ public class JustFilder extends BaseAction{
 	
 	/**
 	 * 扣考作業
+	 * TODO 流程可改成Dilg加總寫入Seld...與遠距同步作業.....效率可望提升......但無法確定先後順序, 可能遠距重匯就洗掉.
 	 * @param close 是否為結算
 	 */
 	private void setExam(){
 		//將範圍內扣考標記設回null
 		recoverSeld();
 		//標記範圍內扣考，排除不計算扣考的假別
-		StringBuilder sb1=new StringBuilder("SELECT d.student_no, d.Dtime_oid, ((dt.thour*18)/3)as thour FROM stmd s, Dilg d, Dtime dt, Class c WHERE " );
+		StringBuilder sb1=new StringBuilder("SELECT d.student_no, d.Dtime_oid, ((dt.thour*18)/3)as thour FROM stmd s, Dilg d, Dtime dt, Class c WHERE dt.cscode!='50000'AND " );
 		if(grade.equals("0")){//非畢業班
 			sb1.append("c.graduate='0'AND c.Type!='E' AND ");
 		}else if(grade.equals("1")){//畢業班
@@ -297,6 +297,8 @@ public class JustFilder extends BaseAction{
 		}else if(grade.equals("2")){//延修班
 			sb1.append("c.Type='E'AND ");
 		}
+		
+		//搞延修
 		sb1.append("s.depart_class=c.ClassNo AND c.CampusNo='"+cno+"' AND c.SchoolType='"+tno+"' AND d.date<='"+endDate+"' AND " +
 		"s.student_no=d.student_no AND dt.Oid=d.Dtime_oid AND d.abs IN(SELECT id FROM Dilg_rules WHERE exam='1')" +
 		"GROUP BY d.student_no, d.Dtime_oid HAVING COUNT(*)>=thour");
@@ -306,13 +308,26 @@ public class JustFilder extends BaseAction{
 		for(int i=0; i<list.size(); i++){
 			df.exSql("UPDATE Seld SET status='1' WHERE student_no='"+list.get(i).get("student_no")+"' AND Dtime_oid="+list.get(i).get("Dtime_oid"));
 		}
-		//建立遠距扣考標記
-		list=df.sqlGet("SELECT s.student_no, s.Dtime_oid, s.elearn_dilg,((d.thour*18)/3)as thour " +
+		
+		
+		
+		
+		
+		//建立遠距扣考標記 TODO 搞全校還是範圍內？
+		/*list=df.sqlGet("SELECT s.student_no, s.Dtime_oid, s.elearn_dilg,((d.thour*18)/3)as thour " +
 		"FROM Seld s, stmd st, Dtime d, Class c WHERE s.elearn_dilg>6 AND c.CampusNo='"+cno+"' AND c.SchoolType='"+tno+"'AND " +
 		"c.ClassNo=st.depart_class AND d.Oid=s.Dtime_oid AND s.student_no=st.student_no HAVING s.elearn_dilg>=thour");		
 		for(int i=0; i<list.size(); i++){
 			df.exSql("UPDATE Seld SET status='1' WHERE student_no='"+list.get(i).get("student_no")+"' AND Dtime_oid="+list.get(i).get("Dtime_oid"));
-		}
+		}*/
+		
+		//df.exSql("UPDATE Seld SET elearn_dilg=elearn_dilg+(SELECT COUNT(*)FROM Dilg d WHERE d.abs<5 AND d.student_no=Seld.student_no AND d.Dtime_oid=Seld.Dtime_oid)WHERE elearn_dilg >0");
+		//每次重標沒什麼不好
+		df.exSql("UPDATE Seld SET status='1' WHERE (elearn_dilg+(SELECT COUNT(*)FROM Dilg d WHERE d.abs IN(SELECT id FROM Dilg_rules WHERE exam='1') AND d.student_no=Seld.student_no AND d.Dtime_oid=Seld.Dtime_oid)) >= (((SELECT thour FROM Dtime WHERE Oid=Seld.Dtime_oid)*18)/3)");
+		//System.out.println("UPDATE Seld SET elearn_dilg=elearn_dilg-(SELECT COUNT(*)FROM Dilg d WHERE d.student_no=Seld.student_no AND d.Dtime_oid=Seld.Dtime_oid)WHERE elearn_dilg >0");;
+		//df.exSql("UPDATE Seld SET elearn_dilg=elearn_dilg-(SELECT COUNT(*)FROM Dilg d WHERE d.student_no=Seld.student_no AND d.Dtime_oid=Seld.Dtime_oid)WHERE elearn_dilg >0");
+		
+		
 	}
 	
 	/**

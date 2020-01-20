@@ -103,7 +103,16 @@ $(document).ready(function() {
 </div>
 </form>
 <script>
-$("input[name='beginDate'], input[name='endDate']" ).datetimepicker();
+$("input[name='beginDate'], input[name='endDate']").datepicker({
+	changeMonth: true,
+	changeYear: true,
+	//minDate: '@minDate'
+	yearRange: "-100:+0"
+	//showButtonPanel: true,
+	//dateFormat: 'yy-MM-dd'
+});
+
+
 </script>
 </body>
 </html>

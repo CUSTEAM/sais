@@ -6,14 +6,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import action.BasePrintXmlAction;
 import model.Message;
-import action.BaseAction;
 
 /**
  * 檢點名記錄
  * @author John
  */
-public class CallStatusViewAction extends BaseAction{
+public class CallStatusViewAction extends BasePrintXmlAction{
 	
 	public String begin;
 	public String end;
@@ -32,8 +32,7 @@ public class CallStatusViewAction extends BaseAction{
 					+ "d.abs=dr.id AND d.student_no=s.student_no AND Dtime_oid="+request.getParameter("Oid"));
 			//制造文字報表
 			Date date=new Date();
-			response.setContentType("application/vnd.ms-excel; charset=UTF-8");
-			response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");				
+			xml2ods(response, getRequest(), date);		
 			PrintWriter out=response.getWriter();
 			
 			out.println("<html>");

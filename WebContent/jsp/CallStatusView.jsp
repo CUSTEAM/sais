@@ -83,7 +83,11 @@ $(document).ready(function() {
 </c:if>
 
 <script>
-$("input[name='begin'], input[name='end']" ).datepicker();
+$("input[name='begin'], input[name='end']").datepicker({
+	changeMonth: true,
+	changeYear: true,
+	yearRange: "-100:+0"
+});
 </script>
 </body>
 </html>

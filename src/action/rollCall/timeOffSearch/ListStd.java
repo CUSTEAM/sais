@@ -8,21 +8,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import action.BaseAction;
+import action.BasePrintXmlAction;
 
 /**
  * 學生細節報表
  * @author John
  *
  */
-public class ListStd extends BaseAction{
+public class ListStd extends BasePrintXmlAction{
 	
 	public void print(HttpServletResponse response, List<Map>list, String beginDate, String endDate, String school_year, String school_term) throws IOException{
 		
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");			
+		xml2ods(response, getRequest(), date);
 		
 		PrintWriter out=response.getWriter();
 		out.println ("<?xml version='1.0'?>");

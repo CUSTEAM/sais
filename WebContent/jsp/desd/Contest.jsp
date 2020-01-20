@@ -43,7 +43,14 @@
 </form>
     
 <script>
-$("input[name='begin'], input[name='end']" ).datepicker();
+$("input[name='begin'], input[name='end']").datepicker({
+	changeMonth: true,
+	changeYear: true,
+	//minDate: '@minDate'
+	yearRange: "-100:+0"
+	//showButtonPanel: true,
+	//dateFormat: 'yy-MM-dd'
+});
 </script>
 </body>
 </html>

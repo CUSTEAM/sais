@@ -75,7 +75,7 @@ $(document).ready(function() {
 		<td nowrap>
 		<div class="input-group">
 	  		<span class="input-group-addon">開始日期</span>
-	  		<input class="form-control" type="text" id="beginDate" placeholder="點一下輸入日期" name="beginDate" value="${beginDate}"/>
+	  		<input class="form-control" type="text" id="beginDate" autocomplete="off" placeholder="點一下輸入日期" name="beginDate" value="${beginDate}"/>
 		
 			<select name="begin" class="selectpicker" data-width="auto">
 			<option value="0">開始節次</option>		
@@ -96,7 +96,7 @@ $(document).ready(function() {
 		
 		<div class="input-group">
 	  		<span class="input-group-addon">結束日期</span>
-	  		<input class="form-control" type="text" id="endDate" placeholder="點一下輸入日期" name="endDate" value="${endDate}"/>
+	  		<input class="form-control" type="text" autocomplete="off" id="endDate" placeholder="點一下輸入日期" name="endDate" value="${endDate}"/>
 			<select name="end" class="selectpicker" data-width="auto">
 			<option value="0">結束節次</option>		
 			<c:forEach begin="1" end="14" var="b">
@@ -243,7 +243,14 @@ ${nameno}<br>
 
     
 <script>
-$("input[name='beginDate'], input[name='endDate']" ).datepicker();
+$("input[name='beginDate'], input[name='endDate']").datepicker({
+	changeMonth: true,
+	changeYear: true,
+	//minDate: '@minDate'
+	yearRange: "-100:+0"
+	//showButtonPanel: true,
+	//dateFormat: 'yy-MM-dd'
+});
 </script>
 
 </body>

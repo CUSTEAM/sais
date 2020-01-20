@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>	
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 	
 	<c:forEach items="${cs}" var="c">	
@@ -59,7 +59,7 @@
 			</td></tr>			
 			</c:forEach>
 			</table>
-			<c:if test="${c.elearn_dilg>0}">遠距課程缺課時數: <span class="label label-important">${c.elearn_dilg}</span></c:if>
+			<c:if test="${c.elearn_dilg>0}">遠距課程缺課時數: ${c.elearn_dilg}</c:if>
 	        
 	      	</div>
 	    </div>

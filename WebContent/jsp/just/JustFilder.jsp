@@ -197,9 +197,14 @@ $(document).ready(function() {
 </form>
     
 <script>
-$("input[name='beginDate'], input[name='endDate']" ).datepicker();
-$("input[name='gradBegin'], input[name='gradEndKillDate']" ).datepicker();
-$("input[name='gradEnd'], input[name='gradEnd']" ).datepicker();
+$("input[name='endDate'], input[name='gradEndKillDate'], input[name='gradEnd']").datepicker({
+	changeMonth: true,
+	changeYear: true,
+	//minDate: '@minDate'
+	yearRange: "-100:+0"
+	//showButtonPanel: true,
+	//dateFormat: 'yy-MM-dd'
+});
 </script>
 
 </body>

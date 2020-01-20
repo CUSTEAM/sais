@@ -7,11 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import action.BasePrintXmlAction;
 import model.Message;
 
-import action.BaseAction;
-
-public class Contest extends BaseAction{
+public class Contest extends BasePrintXmlAction{
 	
 	public String cno;
 	public String sno;
@@ -94,9 +93,7 @@ public class Contest extends BaseAction{
 		}
 		
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");
+		xml2ods(response, getRequest(), date);
 		
 		PrintWriter out=response.getWriter();
 		out.println ("<?xml version='1.0'?>");

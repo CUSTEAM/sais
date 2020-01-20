@@ -5,21 +5,22 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
+import action.BasePrintXmlAction;
 
 /**
  * 報表2
  * @author John
  *
  */
-public class DesdPrint {
+public class DesdPrint extends BasePrintXmlAction{
 	
 	public void print(HttpServletResponse response, List<Map>list, List<Map>desd, List<Map>desd2, List<Map>desd3, Map info) throws IOException{
 		
 		Date date=new Date();
-		response.setContentType("text/html; charset=UTF-8");
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-disposition","attachment;filename="+date.getTime()+".xls");		
+		xml2ods(response, getRequest(), date);
 		
 		PrintWriter out=response.getWriter();
 		out.println ("<?xml version='1.0'?>");
