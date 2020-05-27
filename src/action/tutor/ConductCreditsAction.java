@@ -24,6 +24,10 @@ public class ConductCreditsAction extends BaseAction{
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 		"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'D' as rule FROM " +
 		"CODE_DEPT d, Class c WHERE (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.director='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+		//副主任
+		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
+				"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'D' as rule FROM " +
+				"CODE_DEPT d, Class c WHERE (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.director_deputy='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		
 		//日教官
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
