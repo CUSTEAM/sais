@@ -90,9 +90,9 @@ public class JustFilder extends BaseAction{
 		
 		if(checkDate(endDate)){
 			Message msg=new Message();
-			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			msg.setError("執行前請確認點名、請假等各項流程全部結束");
 			this.savMessage(msg);
-			return execute();
+			//return execute();
 		}
 		
 		leadConut(false);//建立計算範圍
@@ -126,9 +126,9 @@ public class JustFilder extends BaseAction{
 		
 		if(checkDate(endDate)){
 			Message msg=new Message();
-			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			msg.setError("執行前請確認點名、請假等各項流程全部結束");
 			this.savMessage(msg);
-			return execute();
+			//return execute();
 		}
 		
 		//System.out.println(grade);
@@ -466,16 +466,16 @@ public class JustFilder extends BaseAction{
 		
 		if(checkDate(endDate)){
 			Message msg=new Message();
-			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			msg.setError("執行前請確認點名、請假等各項流程全部結束");
 			this.savMessage(msg);
-			return execute();
+			//return execute();
 		}
 		
 		if(checkDate(gradEndKillDate)){
 			Message msg=new Message();
-			msg.setError("為確保點名、請假等各項流程結束，日期請前推至少7天");
+			msg.setError("執行前請確認點名、請假等各項流程全部結束");
 			this.savMessage(msg);
-			return execute();
+			//return execute();
 		}
 		/*if(!grade.equals("1")){
 			Message msg=new Message();
