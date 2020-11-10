@@ -57,8 +57,9 @@ public class TimeOffSearchAction extends BaseAction{
 		+ "stmd.depart_class=Class.ClassNo AND Dilg.abs='4')as abs4,(SELECT COUNT(*)FROM Dilg, stmd WHERE "
 		+ "Dilg.date>='"+beginDate+"'AND Dilg.date<='"+endDate+"'AND Dilg.student_no=stmd.student_no AND "
 		+ "stmd.depart_class=Class.ClassNo AND Dilg.abs='6')as abs6,(SELECT COUNT(*) FROM stmd s "
-		+ "LEFT OUTER JOIN Dilg d ON s.student_no=d.student_no WHERE d.Oid IS NULL AND "
-		+ "s.depart_class =Class.ClassNo)as noabs FROM Class WHERE Type='P'");
+		+ "LEFT OUTER JOIN Dilg d ON s.student_no=d.student_no WHERE d.Oid IS NULL AND "		
+		//+ "s.depart_class =Class.ClassNo)as noabs FROM Class WHERE Type='P'");
+		+ "s.depart_class =Class.ClassNo)as noabs FROM Class WHERE stds>0 ");
 		if(!cno.equals(""))sb.append("AND CampusNo='"+cno+"'");
 		if(!sno.equals(""))sb.append("AND SchoolNo='"+sno+"'");
 		if(!dno.equals(""))sb.append("AND DeptNo='"+dno+"'");
@@ -88,7 +89,7 @@ public class TimeOffSearchAction extends BaseAction{
 	 * @throws IOException
 	 */
 	public String listStd() throws IOException{		
-		StringBuilder sql=new StringBuilder("SELECT c.ClassName, s.student_no,"
+		StringBuilder sql=new StringBuilder("SELECT ''as identName, c.ClassName, s.student_no,"
 		+ "s.student_name,s.parent_name,s.CellPhone,s.telephone,"
 		+ "count(case abs when '1' then 1 else null end)as abs1,"
 		+ "count(case abs when '2' then 1 else null end)as abs2,"

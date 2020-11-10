@@ -23,25 +23,25 @@ public class ConductCreditsAction extends BaseAction{
 		//系主任
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 		"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'D' as rule FROM " +
-		"CODE_DEPT d, Class c WHERE (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.director='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+		"CODE_DEPT d, Class c WHERE stds>0 AND d.id=c.DeptNo AND d.director='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		//副主任
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 				"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'D' as rule FROM " +
-				"CODE_DEPT d, Class c WHERE (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.director_deputy='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+				"CODE_DEPT d, Class c WHERE stds>0 AND d.id=c.DeptNo AND d.director_deputy='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		
 		//日教官
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 		"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'M' as rule FROM " +
-		"CODE_DEPT d, Class c WHERE c.SchoolType='D' AND (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.military='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+		"CODE_DEPT d, Class c WHERE c.SchoolType='D' AND stds>0 AND d.id=c.DeptNo AND d.military='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		
 		//夜教官
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 		"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'M' as rule FROM " +
-		"CODE_DEPT d, Class c WHERE c.SchoolType='N' AND (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.military_n='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+		"CODE_DEPT d, Class c WHERE c.SchoolType='N' AND stds>0 AND d.id=c.DeptNo AND d.military_n='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		//補教官
 		list.addAll(df.sqlGet("SELECT (SELECT COUNT(*)FROM stmd WHERE depart_class=c.ClassNo)as cnt, " +
 		"(SELECT COUNT(*)FROM Just, stmd WHERE stmd.student_no=Just.student_no AND stmd.depart_class=ClassNo AND Just.total_score IS NOT NULL)as score, c.ClassName, c.ClassNo, 'M' as rule FROM " +
-		"CODE_DEPT d, Class c WHERE c.SchoolType='N' AND (c.Type='P' OR c.Type='E') AND d.id=c.DeptNo AND d.military_h='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
+		"CODE_DEPT d, Class c WHERE c.SchoolType='N' AND stds>0 AND d.id=c.DeptNo AND d.military_h='"+getSession().getAttribute("userid")+"' ORDER BY c.ClassNo"));
 		
 		request.setAttribute("myClass", list);
 		

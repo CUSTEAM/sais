@@ -77,7 +77,7 @@ public class ListStd extends BasePrintXmlAction{
 		out.println (" </Styles>");
 		
 		out.println (" <Worksheet ss:Name='缺課統計列表'>");
-		out.println ("  <Table ss:ExpandedColumnCount='14' ss:ExpandedRowCount='"+list.size()+1+"' x:FullColumns='1'");
+		out.println ("  <Table ss:ExpandedColumnCount='15' ss:ExpandedRowCount='"+list.size()+1+"' x:FullColumns='1'");
 		out.println ("   x:FullRows='1' ss:StyleID='s78' ss:DefaultColumnWidth='54'");
 		out.println ("   ss:DefaultRowHeight='25.5'>");
 		out.println ("   <Column ss:StyleID='s76' ss:AutoFitWidth='0' ss:Width='120'/>");
@@ -97,6 +97,7 @@ public class ListStd extends BasePrintXmlAction{
 		out.println ("    <Cell><Data ss:Type='String'>班級</Data></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>學號</Data></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>姓名</Data></Cell>");
+		out.println ("    <Cell><Data ss:Type='String'>身份</Data></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>家長</Data></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>電話</Data></Cell>");
 		out.println ("    <Cell><Data ss:Type='String'>住院</Data></Cell>");
@@ -116,6 +117,7 @@ public class ListStd extends BasePrintXmlAction{
 			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("ClassName")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("student_no")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("student_name")+"</Data></Cell>");
+			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("identName")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("parent_name")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='String'>"+list.get(i).get("CellPhone")+", "+list.get(i).get("telephone")+"</Data></Cell>");
 			out.println ("    <Cell><Data ss:Type='Number'>"+list.get(i).get("abs1")+"</Data></Cell>");
