@@ -30,7 +30,7 @@
 		</action>	
 	</package>
 	
-	<!-- 點名 -->
+	<!-- 假單點名 -->
 	<package name="RollCall" extends="abstract_struts" namespace="/">		
 		<action name="CallStatusView" class="action.rollCall.CallStatusViewAction">
 			<result>/jsp/CallStatusView.jsp</result>
@@ -50,7 +50,12 @@
 		
 		<action name="UploadElearningDilg" class="action.rollCall.UploadElearningDilg">
 			<result>/jsp/elearning/UploadElearningDilg.jsp</result>
+		</action>
+		
+		<action name="DilgAppManager" class="action.doc.DilgAppManagerAction">
+			<result>/jsp/DilgAppManager.jsp</result>
 		</action>	
+		
 		
 	</package>
 	
