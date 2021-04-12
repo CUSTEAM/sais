@@ -63,15 +63,11 @@ function showApp(filename){
 <body>
 <form action="DilgAppManager" method="post" class="form-inline">
 <div class="bs-callout bs-callout-info" id="callout-helper-pull-navbar">		
-	<div class="btn-group" role="group" aria-label="...">
-	<a href="DilgApp" class="btn btn-danger">未審核假單</a>
-	<a href="DilgApp?type=pass" class="btn btn-default">已審核假單</a>
-	<a href="DilgApp?type=redirect" class="btn btn-default">已轉呈假單</a>
-	</div>
-	<a href="/eis/Calendar"class="btn btn-default">返回</a>
-	<div id="funbtn" rel="popover" title="說明" data-content="已處理假單過多影響列表效能時，可利用查詢欄位尋找假單" data-placement="right" class="btn btn-warning">?</div>
+	假單管理
 </div>	
-<div class="alert alert-error">
+<div class="panel panel-primary">
+	<div class="panel-heading">假單列表</div>	
+	
 <table class="table">
 	<tr>
 		<td>
@@ -94,11 +90,12 @@ function showApp(filename){
 			
 	  	</div>
 		<input type="hidden" id="stdNo" value="${stdNo}" name="stdNo"/>				
-		<button class="btn btn-danger" name="method:search" type="submit">尋找已審核假單</button>			
+		<button class="btn btn-danger" name="method:search" type="submit">查詢假單</button>			
 		</td>
 	</tr>
 </table>
 </div>
+
 	
 	
 <!-- Modal -->
@@ -118,19 +115,10 @@ function showApp(filename){
     </div>
   </div>
 </div>
-
 <c:if test="${!empty dilgs}">
 <div class="panel panel-primary">
 	<div class="panel-heading">假單列表</div>	
-	<div id="collapseH" class="panel-collapse collapse" role="tabpaneH" aria-labelledby="headingH">
-			
-			<ul class="list-group">
-			<li class="list-group-item"><span class="label label-as-badge label-warning">1</span> 跨日/夜間修課請點選日/夜間課表查詢, 或直接以課程名稱查詢</li>
-			<li class="list-group-item"><span class="label label-as-badge label-warning">2</span> 管制加/退選的規則是由各系或各部制權責單位設定, 程式按照其設定提供同學進行選課</li>
-			<li class="list-group-item"><span class="label label-as-badge label-danger">3</span> 選課後的篩選工作由各部制權責單位決定是否進行, 若該單位決定採用第1階段選課, 表示該單位將執行人數過多的課程篩選</li>
-			</ul>
-			
-	    </div>
+	
     <display:table pagesize="10" name="${dilgs}" id="row" class="table" sort="list" excludedParams="*" >
   	<display:column title="學生資訊"  sortable="true">
   	${row.ClassName}<br>${row.student_no}<br>${row.student_name}<br>
